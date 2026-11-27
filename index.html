@@ -58,7 +58,7 @@ label{display:block;font-weight:500;margin-block:12px 4px}
 .tabs button.on{background:var(--sky);color:#fff;font-weight:700}
 .err{color:var(--coral);font-size:.92rem;min-height:1.4em;margin-top:10px}
 .dash{display:grid;grid-template-columns:230px 1fr;gap:24px;padding-block:24px}
-.dash:has(> #pg:only-child){grid-template-columns:1fr}
+.dash:has(> .col:only-child){grid-template-columns:1fr}
 .side{display:flex;flex-direction:column;gap:4px}
 .side a{padding:10px 14px;border-radius:12px;text-decoration:none;color:var(--ink);font-weight:500;cursor:pointer}
 .side a:hover{background:var(--line)}
@@ -79,6 +79,8 @@ label{display:block;font-weight:500;margin-block:12px 4px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 #pa{display:none}.pp{color:#000;font-family:inherit}.pp table{margin-bottom:12px}.pp td,.pp th{border:1px solid #999;padding:6px 10px}@media print{body.printing #app,body.printing #toast{display:none!important}body.printing #pa{display:block}body{background:#fff}.pp button,.pp input{display:none}}
 .adb{display:flex;align-items:center;gap:12px;background:#fff;border:2px dashed var(--bus);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;text-decoration:none;color:var(--ink)}.adb img{height:48px;border-radius:8px}.adb small{margin-inline-start:auto;color:var(--ink2);font-size:.75rem}
+.hero2{background:linear-gradient(135deg,#0B5D44,#14A06A);color:#fff;border-radius:22px;padding:20px 22px}.hero2 h2{color:#fff}.tb{text-align:end;margin-bottom:10px}.fg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.fc{background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px 8px;text-align:center;cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center;color:var(--ink);transition:.15s}.fc:hover{transform:translateY(-3px)}.fc span{font-size:2rem;line-height:1.2}.fc:nth-child(4n+1){background:#EAF7FF}.fc:nth-child(4n+2){background:#FFF4E0}.fc:nth-child(4n+3){background:#F1ECFF}.fc:nth-child(4n){background:#EAFBF1}@media(min-width:760px){.fg{grid-template-columns:repeat(4,1fr)}}
+.qrov{position:fixed;inset:0;background:#000;z-index:20;display:flex;flex-direction:column}.qrov video{flex:1;object-fit:cover;width:100%;min-height:0}.qrb{display:flex;justify-content:space-between;align-items:center;padding:14px;color:#fff;font-size:1.6rem}.qc{display:inline-block;width:190px;border:1px solid #999;padding:10px;margin:6px;text-align:center;vertical-align:top;color:#000}
 </style>
 </head>
 <body>
@@ -151,10 +153,16 @@ T.ur.m.notices="اعلانات و ہوم ورک";T.en.m.notices="Notices & homew
 Object.assign(T.ur,{demo:"ڈیمو",demoBtn:"ڈیمو دیکھیں",demoN:"یہ صرف نمونہ ہے، فرضی ڈیٹا کے ساتھ۔ اس کا کوئی ریکارڈ محفوظ نہیں ہوتا۔",offl:"انٹرنیٹ بند ہے۔ حاضری محفوظ ہوتی رہے گی اور نیٹ آنے پر سینک ہوگی۔",onl:"انٹرنیٹ واپس آ گیا"});
 Object.assign(T.en,{demo:"Demo",demoBtn:"See demo",demoN:"This is only a sample with fake data. Nothing is saved.",offl:"You are offline. Attendance keeps saving and syncs when the internet is back.",onl:"Back online"});
 T.ur.m.tatt="اساتذہ کی حاضری";T.en.m.tatt="Teachers' attendance";
+Object.assign(T.ur,{etitle:"عنوان",ev_exam:"امتحان",ev_holiday:"چھٹی",ev_meeting:"والدین میٹنگ",ev_event:"تقریب",ev_admission:"داخلہ",cert:"سرٹیفکیٹ",certTo:"یہ سرٹیفکیٹ پیش کیا جاتا ہے"});
+Object.assign(T.en,{etitle:"Title",ev_exam:"Exam",ev_holiday:"Holiday",ev_meeting:"Parents meeting",ev_event:"Event",ev_admission:"Admission",cert:"Certificate",certTo:"This certificate is proudly presented to"});
+T.ur.m.events="ایونٹس و کیلنڈر";T.en.m.events="Events & calendar";T.ur.m.awards="کامیابیاں و سرٹیفکیٹ";T.en.m.awards="Achievements & certificates";T.ur.m.videos="ویڈیو لائبریری";T.en.m.videos="Video library";
+Object.assign(T.ur,{pts:"پوائنٹس",streak:"مسلسل دن",chal14:"14 دن کا چیلنج",qDone:"آج کا کوئز مکمل ہو گیا۔ کل پھر آئیں!",board:"لیڈر بورڈ",qrScan:"QR اسکین (اختیاری)",qrAll:"QR کارڈ پرنٹ",qrAbs:"جو اسکین نہیں ہوئے انہیں غیر حاضر لگائیں؟ (رخصت والے محفوظ رہیں گے)",noQr:"اس فون پر QR اسکین دستیاب نہیں، حاضری ہاتھ سے لگائیں۔",qrStop:"ختم کریں"});
+Object.assign(T.en,{pts:"Points",streak:"Day streak",chal14:"14-day challenge",qDone:"Today's quiz is done. Come back tomorrow!",board:"Leaderboard",qrScan:"Scan QR (optional)",qrAll:"Print QR cards",qrAbs:"Mark everyone not scanned as absent? (those on leave stay unchanged)",noQr:"QR scanning is not available on this phone. Mark attendance by hand.",qrStop:"Finish"});
+T.ur.m.quiz="روزانہ کوئز";T.en.m.quiz="Daily quiz";
 // ہر کردار کو کون سے مینو ملتے ہیں (حصہ 2 میں اجازتوں کے ساتھ جوڑا جائے گا)
 const MENU = { principal:["home","staff","students","teachers","attendance","fees","finance","exams","profile","community","settings"],
   teacher:["home","students","attendance","exams","profile"], finance:["home","fees","finance","community"],
-  parent:["home","children","fees","results","notices","daily","community"], viewer:["home"], admin:["home","community","settings"] };
+  parent:["home","children","fees","results","notices","daily","events","awards","videos","quiz","community"], viewer:["home"], admin:["home","community","settings"] };
 
 let lang = localStorage.getItem("lang") || "ur", user = null, profile = null, school = null, tab = "school";
 const t = () => T[lang], $ = s => document.querySelector(s), app$ = $("#app");
@@ -273,7 +281,7 @@ const PL = { ur: { students: "طلبہ کا انتظام", attendance: "حاضر
 const PRESET = { teacher: ["attendance", "results", "notices"], finance: ["fees", "finance"], manager: [], parent: [] };
 const BOSS = () => ["principal", "manager"].includes(profile.role);
 const can = p => BOSS() || (profile.perms || []).includes(p);
-const SID = () => profile.schoolId, MP = { students: "students", attendance: "attendance", fees: "fees", finance: "finance", exams: "results", notices: "notices", daily: "attendance" };
+const SID = () => profile.schoolId, MP = { students: "students", attendance: "attendance", fees: "fees", finance: "finance", exams: "results", notices: "notices", daily: "attendance", events: "notices", videos: "notices", awards: "results" };
 const staffAuth = getAuth(initializeApp(firebaseConfig, "staff"));
 const shrink = f => new Promise(r => { const i = new Image(); i.onload = () => { const k = Math.min(1, 800 / Math.max(i.width, i.height)), c = document.createElement("canvas"); c.width = i.width * k; c.height = i.height * k; c.getContext("2d").drawImage(i, 0, 0, c.width, c.height); r(c.toDataURL("image/jpeg", .6)); }; i.src = URL.createObjectURL(f); });
 
@@ -309,13 +317,15 @@ async function feed(box, canPost, fset, ro) {
 // ---------- طلبہ ----------
 async function studentsPage(pg) {
   const col = collection(db, "schools", SID(), "students"); let L = [];
-  pg.innerHTML = `<h2>${t().m.students}</h2><form class="card" id="sf"><div class="grid"><div><label>${t().sname}</label><input id="sn"></div><div><label>${t().father}</label><input id="sfa"></div><div><label>${t().cls}</label><input id="sc"></div><div><label>${t().roll}</label><input id="sro"></div></div><button class="btn pri" style="margin-top:12px">${t().add}</button></form><input id="sq" placeholder="${t().search2}"><div id="sl" style="margin-top:12px"></div>`;
+  pg.innerHTML = `<h2>${t().m.students}</h2><form class="card" id="sf"><div class="grid"><div><label>${t().sname}</label><input id="sn"></div><div><label>${t().father}</label><input id="sfa"></div><div><label>${t().cls}</label><input id="sc"></div><div><label>${t().roll}</label><input id="sro"></div></div><button class="btn pri" style="margin-top:12px">${t().add}</button></form><button class="btn sm" id="sqr" style="margin-bottom:10px">🖨 ${t().qrAll}</button> <input id="sq" placeholder="${t().search2}"><div id="sl" style="margin-top:12px"></div>`;
   const draw = () => { const q = $("#sq").value.trim().toLowerCase();
-    $("#sl").innerHTML = L.filter(s => (s.name + s.father + s.cls + s.roll).toLowerCase().includes(q)).map(s => `<div class="card row2"><div><b>${esc(s.name)}</b> <span class="muted">${esc(s.father)} · ${esc(s.cls)} · #${esc(s.roll)}</span></div><button class="btn sm pri" data-pr="${s.id}">${t().prof}</button> ${can("students") ? `<button class="btn sm" data-d="${s.id}">✕</button>` : ""}</div>`).join("") || `<p class="muted">${t().nostu}</p>`;
+    $("#sl").innerHTML = L.filter(s => (s.name + s.father + s.cls + s.roll).toLowerCase().includes(q)).map(s => `<div class="card row2"><div><b>${esc(s.name)}</b> <span class="muted">${esc(s.father)} · ${esc(s.cls)} · #${esc(s.roll)}</span></div><button class="btn sm pri" data-pr="${s.id}">${t().prof}</button> <button class="btn sm" data-qr="${s.id}">QR</button> ${can("students") ? `<button class="btn sm" data-d="${s.id}">✕</button>` : ""}</div>`).join("") || `<p class="muted">${t().nostu}</p>`;
     document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); load(); });
-    document.querySelectorAll("[data-pr]").forEach(b => b.onclick = () => stuProfile(pg, L.find(x => x.id === b.dataset.pr), () => studentsPage(pg))); };
+    document.querySelectorAll("[data-pr]").forEach(b => b.onclick = () => stuProfile(pg, L.find(x => x.id === b.dataset.pr), () => studentsPage(pg)));
+    document.querySelectorAll("[data-qr]").forEach(b => b.onclick = () => printHTML(qrCard(L.find(x => x.id === b.dataset.qr)))); };
   const load = async () => { try { L = (await getDocs(col)).docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.cls + a.roll).localeCompare(b.cls + b.roll, undefined, { numeric: true })); } catch (e) { toast(e.code); } draw(); };
   $("#sq").oninput = draw;
+  $("#sqr").onclick = () => { const q = $("#sq").value.trim().toLowerCase(); printHTML(L.filter(s => (s.name + s.father + s.cls + s.roll).toLowerCase().includes(q)).map(s => qrCard(s)).join("")); };
   $("#sf").onsubmit = async e => { e.preventDefault(); const v = i => $("#" + i).value.trim(); if (!v("sn") || !v("sc")) return toast(t().need);
     try { await addDoc(col, { name: v("sn"), father: v("sfa"), cls: v("sc"), roll: v("sro"), createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
   load();
@@ -324,18 +334,21 @@ async function studentsPage(pg) {
 // ---------- حاضری (روزانہ + ماہانہ/سالانہ خلاصہ) ----------
 async function attPage(pg) {
   const sc = collection(db, "schools", SID(), "students"), ac = collection(db, "schools", SID(), "attendance"), today = new Date().toISOString().slice(0, 10);
-  pg.innerHTML = `<h2>${t().m.attendance}</h2><div class="card"><div class="grid"><div><label>${t().date}</label><input id="ad" type="date" value="${today}"></div><div><label>${t().cls}</label><select id="ac"></select></div></div><div id="ar" style="margin-top:12px"></div><button class="btn pri" id="as">${t().save}</button></div>
+  pg.innerHTML = `<h2>${t().m.attendance}</h2><div class="card"><div class="grid"><div><label>${t().date}</label><input id="ad" type="date" value="${today}"></div><div><label>${t().cls}</label><select id="ac"></select></div></div><button class="btn sm" id="aqr" style="margin-top:12px">📷 ${t().qrScan}</button><div id="ar" style="margin-top:12px"></div><button class="btn pri" id="as">${t().save}</button></div>
   <div class="card"><h3>${t().summary}</h3><label>${t().month}</label><input id="am" type="month" value="${today.slice(0, 7)}"><div style="margin-block:10px"><button class="btn sm" id="sm">${t().month}</button> <button class="btn sm" id="sy">${t().year}</button></div><div id="sx" style="overflow-x:auto"></div></div>`;
   let S = [], cur = {};
   try { S = (await getDocs(sc)).docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => a.roll.localeCompare(b.roll, undefined, { numeric: true })); } catch (e) { toast(e.code); }
   $("#ac").innerHTML = [...new Set(S.map(s => s.cls))].map(c => `<option>${esc(c)}</option>`).join("");
   const shown = () => S.filter(s => s.cls === $("#ac").value);
   const drawR = async () => {
-    let sn = null; try { sn = await getDoc(doc(ac, $("#ad").value)); } catch (e) { console.warn(e); } cur = sn && sn.exists() ? { ...sn.data().marks } : {};
-    $("#ar").innerHTML = shown().map(s => `<div class="card row2"><span>${esc(s.name)} <span class="muted">#${esc(s.roll)}</span></span><span class="seg" data-s="${s.id}">${["P", "A", "L"].map(k => `<button type="button" data-k="${k}" class="${(cur[s.id] || "P") === k ? "on" : ""}">${t().att[k]}</button>`).join("")}</span></div>`).join("") || `<p class="muted">${t().nostu}</p>`;
+    let sn = null; try { sn = await getDoc(doc(ac, $("#ad").value)); } catch (e) { console.warn(e); } cur = sn && sn.exists() ? { ...sn.data().marks } : {}; paint(); };
+  const paint = () => { $("#ar").innerHTML = shown().map(s => `<div class="card row2"><span>${esc(s.name)} <span class="muted">#${esc(s.roll)}</span></span><span class="seg" data-s="${s.id}">${["P", "A", "L"].map(k => `<button type="button" data-k="${k}" class="${(cur[s.id] || "P") === k ? "on" : ""}">${t().att[k]}</button>`).join("")}</span></div>`).join("") || `<p class="muted">${t().nostu}</p>`;
     document.querySelectorAll(".seg button").forEach(b => b.onclick = () => { cur[b.parentNode.dataset.s] = b.dataset.k; b.parentNode.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); });
   };
   $("#ad").onchange = $("#ac").onchange = drawR;
+  $("#aqr").onclick = () => { const seen = new Set();
+    qrScan(id => { const s = S.find(x => x.id === id); if (!s || seen.has(id)) return false; seen.add(id); cur[id] = "P"; toast("✅ " + s.name); if (navigator.vibrate) navigator.vibrate(80); paint(); return true; },
+      () => { if (seen.size && confirm(t().qrAbs)) shown().forEach(s => { if (!seen.has(s.id) && cur[s.id] !== "L") cur[s.id] = "A"; }); paint(); }); };
   $("#as").onclick = async () => { shown().forEach(s => cur[s.id] = cur[s.id] || "P"); const d = $("#ad").value;
     setDoc(doc(ac, d), { marks: cur, month: d.slice(0, 7), year: d.slice(0, 4) }).catch(e => toast(e.code)); toast(t().savedOff); };
   const sum = async (f, v) => { const T0 = {}; (await getDocs(query(ac, where(f, "==", v)))).docs.forEach(x => Object.entries(x.data().marks || {}).forEach(([id, k]) => { (T0[id] = T0[id] || { P: 0, A: 0, L: 0 })[k]++; }));
@@ -605,28 +618,185 @@ function demoView() {
   $("#dmr").onclick = () => { tab = "school"; location.hash = "auth"; };
 }
 
+// ---------- ہر صفحے کا پرنٹ / PDF ----------
+const IC = { home: "🏠", staff: "👥", students: "🎓", teachers: "👩‍🏫", tatt: "🗓️", attendance: "✅", notices: "📢", daily: "📖", fees: "💰", finance: "📊", exams: "📝", profile: "🏫", community: "🌐", events: "📅", awards: "🏆", videos: "🎥", children: "👨‍👩‍👧", results: "📝", admin: "⚙️", quiz: "🧠" };
+function printPage() {
+  const pg = $("#pg"), c = pg.cloneNode(true), o = pg.querySelectorAll("input,select"), n = c.querySelectorAll("input,select");
+  n.forEach((el, i) => { const x = o[i], s = document.createElement("span"); s.textContent = x.type === "checkbox" ? (x.checked ? "☑" : "☐") : x.tagName === "SELECT" ? (x.selectedOptions[0]?.text || "") : x.type === "file" ? "" : x.value; el.replaceWith(s); });
+  c.querySelectorAll("button").forEach(b => { if (b.classList.contains("on")) b.replaceWith(Object.assign(document.createElement("b"), { textContent: b.textContent + " " })); else b.remove(); });
+  c.querySelectorAll("iframe").forEach(f => f.remove());
+  printHTML(c.innerHTML);
+}
+const certHTML = x => `<div style="text-align:center;border:6px double #0E8F63;padding:30px"><h1>${t().cert}</h1><p>${t().certTo}</p><h2>${esc(x.name)}</h2><p>${esc(x.cls)}</p><h3>${esc(x.title)}</h3><p>${esc(x.month)}</p><p style="margin-top:40px">${t().sign}: __________</p></div>`;
+
+// ---------- ہوم: فیچرز کا گرڈ اور گنتی ----------
+function homeGrid(pg, items) {
+  pg.insertAdjacentHTML("beforeend", `<div class="fg">${items.filter(k => k !== "home").map(k => `<a class="fc" data-go="${k}"><span>${IC[k] || "📌"}</span><b>${t().m[k] || k}</b></a>`).join("")}</div>`);
+  pg.querySelectorAll("[data-go]").forEach(a => a.onclick = () => { if (!LIVE.includes(a.dataset.go)) return toast(t().soon); page = a.dataset.go; dashboard(); });
+}
+async function statsRow(pg) {
+  let a = 0, b = 0; try { a = (await getDocs(collection(db, "schools", SID(), "students"))).size; b = (await getDocs(collection(db, "schools", SID(), "teachers"))).size; } catch (e) { console.warn(e); }
+  pg.insertAdjacentHTML("beforeend", `<div class="grid" style="margin-top:16px"><div class="card stat"><span>${t().m.students}</span><b>${a}</b></div><div class="card stat"><span>${t().m.teachers}</span><b>${b}</b></div></div>`);
+}
+
+// ---------- ایونٹس اور کیلنڈر ----------
+async function eventsPage(pg, canEdit) {
+  const col = collection(db, "schools", SID(), "events"), ET = { exam: "📝", holiday: "🏖️", meeting: "👪", event: "🎉", admission: "🎓" };
+  pg.innerHTML = `<h2>${t().m.events}</h2>${canEdit ? `<form class="card" id="ef"><div class="grid"><div><label>${t().date}</label><input id="e1" type="date"></div><div><label>${t().type}</label><select id="e2">${Object.keys(ET).map(k => `<option value="${k}">${ET[k]} ${t()["ev_" + k]}</option>`).join("")}</select></div></div><label>${t().etitle}</label><input id="e3"><button class="btn pri" style="margin-top:12px">${t().add}</button></form>` : ""}<div id="el"></div>`;
+  const load = async () => { let L = []; try { L = (await getDocs(col)).docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => a.date.localeCompare(b.date)); } catch (e) { toast(e.code); }
+    const today = new Date().toISOString().slice(0, 10);
+    $("#el").innerHTML = L.map(x => `<div class="card row2" style="${x.date < today ? "opacity:.55" : ""}"><div><b>${ET[x.type] || "📌"} ${esc(x.title)}</b><div class="muted">${esc(x.date)}</div></div>${canEdit ? `<button class="btn sm" data-d="${x.id}">✕</button>` : ""}</div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); load(); }); };
+  if (canEdit) $("#ef").onsubmit = async e => { e.preventDefault(); if (!$("#e1").value || !$("#e3").value.trim()) return toast(t().need);
+    try { await addDoc(col, { date: $("#e1").value, type: $("#e2").value, title: $("#e3").value.trim(), createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
+  load();
+}
+
+// ---------- ویڈیو لائبریری (یوٹیوب لنک) ----------
+async function videosPage(pg, canEdit) {
+  const col = collection(db, "schools", SID(), "videos");
+  pg.innerHTML = `<h2>${t().m.videos}</h2>${canEdit ? `<form class="card" id="vf"><label>${t().etitle}</label><input id="v1"><label>${t().vid}</label><input id="v2" dir="ltr"><button class="btn pri" style="margin-top:12px">${t().add}</button></form>` : ""}<div id="vl"></div>`;
+  const load = async () => { let L = []; try { L = (await getDocs(col)).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { toast(e.code); }
+    $("#vl").innerHTML = L.map(x => `<div class="card post"><b>🎥 ${esc(x.title)}</b><iframe src="https://www.youtube-nocookie.com/embed/${esc(x.vid)}" loading="lazy" allowfullscreen></iframe>${canEdit ? `<button class="btn sm" data-d="${x.id}">✕</button>` : ""}</div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); load(); }); };
+  if (canEdit) $("#vf").onsubmit = async e => { e.preventDefault(); const v = ytId($("#v2").value); if (!$("#v1").value.trim() || !v) return toast(t().badVid);
+    try { await addDoc(col, { title: $("#v1").value.trim(), vid: v, createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
+  load();
+}
+
+// ---------- کامیابیاں اور سرٹیفکیٹ ----------
+async function awardsPage(pg, canEdit) {
+  const col = collection(db, "schools", SID(), "awards"); let S = [];
+  if (canEdit) { try { S = (await getDocs(collection(db, "schools", SID(), "students"))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { toast(e.code); } }
+  pg.innerHTML = `<h2>${t().m.awards}</h2>${canEdit ? `<form class="card" id="wf"><label>${t().sname}</label><select id="w1">${S.map(s => `<option value="${s.id}">${esc(s.name)} — ${esc(s.cls)}</option>`).join("")}</select><label>${t().etitle}</label><input id="w2"><label>${t().month}</label><input id="w3" type="month" value="${new Date().toISOString().slice(0, 7)}"><button class="btn pri" style="margin-top:12px">${t().add}</button></form>` : ""}<div id="wl"></div>`;
+  const load = async () => { let L = [];
+    try { if (canEdit) L = (await getDocs(col)).docs.map(d => ({ id: d.id, ...d.data() })); else for (const id of profile.children || []) L.push(...(await getDocs(query(col, where("studentId", "==", id)))).docs.map(d => ({ id: d.id, ...d.data() }))); } catch (e) { toast(e.code); }
+    L.sort((a, b) => (b.month || "").localeCompare(a.month || ""));
+    $("#wl").innerHTML = L.map((x, i) => `<div class="card row2"><div><b>🏆 ${esc(x.name)}</b> <span class="muted">${esc(x.cls)}</span><div>${esc(x.title)} · ${esc(x.month)}</div></div><span><button class="btn sm" data-c="${i}">🖨</button>${canEdit ? ` <button class="btn sm" data-d="${x.id}">✕</button>` : ""}</span></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    document.querySelectorAll("[data-c]").forEach(b => b.onclick = () => printHTML(certHTML(L[+b.dataset.c])));
+    document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); load(); }); };
+  if (canEdit) $("#wf").onsubmit = async e => { e.preventDefault(); const s = S.find(x => x.id === $("#w1").value); if (!s || !$("#w2").value.trim()) return toast(t().need);
+    try { await addDoc(col, { studentId: s.id, name: s.name, cls: s.cls, title: $("#w2").value.trim(), month: $("#w3").value, createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
+  load();
+}
+
+// ---------- QR کوڈ بنانے والا (بائٹ موڈ، ورژن 1 سے 3، ECC=M) ----------
+const QRM = (() => {
+  const EXP = new Array(512), LOG = new Array(256); let x = 1;
+  for (let i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 256) x ^= 0x11d; }
+  for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+  const mul = (a, b) => a && b ? EXP[LOG[a] + LOG[b]] : 0;
+  const rs = (data, n) => { let g = [1]; for (let i = 0; i < n; i++) { const ng = new Array(g.length + 1).fill(0); g.forEach((c, j) => { ng[j] ^= c; ng[j + 1] ^= mul(c, EXP[i]); }); g = ng; }
+    const r = new Array(n).fill(0); data.forEach(d => { const f = d ^ r[0]; r.shift(); r.push(0); g.slice(1).forEach((c, j) => { r[j] ^= mul(c, f); }); }); return r; };
+  const CAP = [null, [16, 10], [28, 16], [44, 26]];
+  const MK = [(r, c) => (r + c) % 2 === 0, (r, c) => r % 2 === 0, (r, c) => c % 3 === 0, (r, c) => (r + c) % 3 === 0, (r, c) => (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0,
+    (r, c) => (r * c) % 2 + (r * c) % 3 === 0, (r, c) => ((r * c) % 2 + (r * c) % 3) % 2 === 0, (r, c) => ((r + c) % 2 + (r * c) % 3) % 2 === 0];
+  return text => {
+    const b = [...new TextEncoder().encode(text)]; let v = 1; while (v < 3 && b.length > CAP[v][0] - 2) v++; if (b.length > CAP[v][0] - 2) return null;
+    const [dc, ec] = CAP[v], bits = [], put = (val, k) => { for (let i = k - 1; i >= 0; i--) bits.push((val >> i) & 1); };
+    put(4, 4); put(b.length, 8); b.forEach(c => put(c, 8)); put(0, Math.min(4, dc * 8 - bits.length)); while (bits.length % 8) bits.push(0);
+    const cw = []; for (let i = 0; i < bits.length; i += 8) cw.push(parseInt(bits.slice(i, i + 8).join(""), 2));
+    for (let p = 0; cw.length < dc; p++) cw.push(p % 2 ? 0x11 : 0xec);
+    const stream = []; cw.concat(rs(cw, ec)).forEach(c => { for (let i = 7; i >= 0; i--) stream.push((c >> i) & 1); }); if (v > 1) for (let i = 0; i < 7; i++) stream.push(0);
+    const n = 17 + 4 * v, M = Array.from({ length: n }, () => new Array(n).fill(null)), set = (r, c, val) => { if (r >= 0 && r < n && c >= 0 && c < n) M[r][c] = val; };
+    const finder = (r, c) => { for (let i = -1; i <= 7; i++) for (let j = -1; j <= 7; j++) set(r + i, c + j, i >= 0 && i <= 6 && j >= 0 && j <= 6 && (i === 0 || i === 6 || j === 0 || j === 6 || (i >= 2 && i <= 4 && j >= 2 && j <= 4)) ? 1 : 0); };
+    finder(0, 0); finder(0, n - 7); finder(n - 7, 0);
+    for (let i = 8; i < n - 8; i++) { set(6, i, i % 2 ? 0 : 1); set(i, 6, i % 2 ? 0 : 1); }
+    if (v > 1) { const c = n - 7; for (let i = -2; i <= 2; i++) for (let j = -2; j <= 2; j++) set(c + i, c + j, Math.max(Math.abs(i), Math.abs(j)) !== 1 ? 1 : 0); }
+    for (let i = 0; i < 9; i++) { if (M[8][i] === null) M[8][i] = 0; if (M[i][8] === null) M[i][8] = 0; }
+    for (let i = 0; i < 8; i++) { if (M[8][n - 1 - i] === null) M[8][n - 1 - i] = 0; if (M[n - 1 - i][8] === null) M[n - 1 - i][8] = 0; }
+    M[n - 8][8] = 1;
+    const fixed = M.map(r => r.map(z => z !== null)); let k = 0, up = true;
+    for (let c = n - 1; c > 0; c -= 2) { if (c === 6) c = 5; for (let t = 0; t < n; t++) { const r = up ? n - 1 - t : t; for (let d = 0; d < 2; d++) if (!fixed[r][c - d]) M[r][c - d] = stream[k++] || 0; } up = !up; }
+    const fmt = m => { let r = m << 10; for (let i = 14; i >= 10; i--) if ((r >> i) & 1) r ^= 0x537 << (i - 10); return ((m << 10) | r) ^ 0x5412; };
+    const build = m => { const G = M.map((row, r) => row.map((z, c) => fixed[r][c] ? z : (MK[m](r, c) ? z ^ 1 : z))), f = fmt(m), bit = i => (f >> i) & 1;
+      for (let i = 0; i <= 5; i++) G[i][8] = bit(i); G[7][8] = bit(6); G[8][8] = bit(7); G[8][7] = bit(8); for (let i = 9; i < 15; i++) G[8][14 - i] = bit(i);
+      for (let i = 0; i < 8; i++) G[8][n - 1 - i] = bit(i); for (let i = 8; i < 15; i++) G[n - 15 + i][8] = bit(i); G[n - 8][8] = 1; return G; };
+    const pen = G => { let p = 0; for (let a = 0; a < 2; a++) for (let i = 0; i < n; i++) { let run = 1; for (let j = 1; j < n; j++) { const x = a ? G[j][i] : G[i][j], y = a ? G[j - 1][i] : G[i][j - 1]; if (x === y) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else run = 1; } }
+      for (let i = 0; i < n - 1; i++) for (let j = 0; j < n - 1; j++) { const x = G[i][j]; if (x === G[i][j + 1] && x === G[i + 1][j] && x === G[i + 1][j + 1]) p += 3; }
+      const P = [1, 0, 1, 1, 1, 0, 1], z4 = (L, a, b) => b <= L.length && a >= 0 && L.slice(a, b).every(v => !v);
+      for (let a = 0; a < 2; a++) for (let i = 0; i < n; i++) { const L = []; for (let j = 0; j < n; j++) L.push(a ? G[j][i] : G[i][j]); for (let j = 0; j + 7 <= n; j++) if (P.every((v, k) => L[j + k] === v) && (z4(L, j - 4, j) || z4(L, j + 7, j + 11))) p += 40; }
+      const dark = G.flat().filter(Boolean).length; return p + Math.floor(Math.abs(dark * 20 - n * n * 10) / (n * n)) * 10; };
+    let best = null, bp = 1e9; for (let m = 0; m < 8; m++) { const G = build(m), p = pen(G); if (p < bp) { bp = p; best = G; } } return best;
+  };
+})();
+const qrSvg = (text, px = 150) => { const G = QRM(text); if (!G) return ""; const n = G.length, q = 4, W = n + 2 * q; let d = "";
+  G.forEach((row, r) => row.forEach((v, c) => { if (v) d += `M${c + q} ${r + q}h1v1h-1z`; }));
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${W}" width="${px}" height="${px}" shape-rendering="crispEdges"><rect width="${W}" height="${W}" fill="#fff"/><path d="${d}"/></svg>`; };
+
+// ---------- QR کارڈ اور اسکینر ----------
+const qrCard = s => `<div class="qc">${qrSvg("ec1|" + s.id, 150)}<b>${esc(s.name)}</b><div>${esc(s.cls)} · #${esc(s.roll)}</div><small>${esc(school?.name || "")}</small></div>`;
+async function qrScan(onCode, onStop) {
+  if (!("BarcodeDetector" in window) || !navigator.mediaDevices) return toast(t().noQr);
+  let stream, timer; const ov = document.createElement("div"); ov.className = "qrov";
+  ov.innerHTML = `<video playsinline muted autoplay></video><div class="qrb"><b id="qrc">0</b><button class="btn bus" id="qrx">${t().qrStop}</button></div>`; document.body.appendChild(ov);
+  const stop = () => { clearInterval(timer); if (stream) stream.getTracks().forEach(x => x.stop()); ov.remove(); if (onStop) onStop(); };
+  $("#qrx").onclick = stop;
+  try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); } catch (e) { ov.remove(); return toast(t().noQr); }
+  const v = ov.querySelector("video"); v.srcObject = stream; await v.play().catch(() => {});
+  const det = new BarcodeDetector({ formats: ["qr_code"] }); let n = 0;
+  timer = setInterval(async () => { try { (await det.detect(v)).forEach(b => { const m = /^ec1\|(\S+)$/.exec(b.rawValue || ""); if (m && onCode(m[1])) $("#qrc").textContent = ++n; }); } catch (e) { /* فریم تیار نہیں */ } }, 350);
+}
+
+// ---------- روزانہ کوئز، لیڈر بورڈ، 14 دن کا چیلنج ----------
+const MSG = ["علم حاصل کرو، یہی کامیابی کی پہلی سیڑھی ہے۔", "آج کا کام آج ہی کرو، کل پر مت چھوڑو۔", "محنت کرنے والے کبھی خالی ہاتھ نہیں لوٹتے۔", "چھوٹی چھوٹی کوششیں مل کر بڑی کامیابی بنتی ہیں۔", "سچ بولنا سب سے بڑی عادت ہے۔", "پڑھنے کی عادت ڈالو، دنیا تمہاری ہو جائے گی۔", "ہر دن کچھ نیا سیکھو۔", "استاد کا احترام علم کی پہلی شرط ہے۔", "وقت کی قدر کرو، یہ لوٹ کر نہیں آتا۔", "غلطی سے سیکھنے والا کبھی ہارتا نہیں۔", "اچھے اخلاق سب سے بڑی دولت ہیں۔", "خواب دیکھو اور ان کے لیے محنت کرو۔", "صبر اور مستقل مزاجی کامیابی کی کنجی ہیں۔", "علم بانٹنے سے بڑھتا ہے۔"];
+const dayMsg = () => MSG[Math.floor(Date.now() / 864e5) % MSG.length];
+const QB = [
+  ["پاکستان کا دارالحکومت کون سا ہے؟", ["کراچی", "اسلام آباد", "لاہور", "پشاور"], 1], ["پاکستان کا قومی پھول کون سا ہے؟", ["گلاب", "چنبیلی", "سورج مکھی", "کنول"], 1],
+  ["قائداعظم کا اصل نام کیا تھا؟", ["محمد علی جناح", "لیاقت علی خان", "علامہ اقبال", "سر سید احمد خان"], 0], ["رقبے کے لحاظ سے پاکستان کا سب سے بڑا صوبہ کون سا ہے؟", ["پنجاب", "سندھ", "بلوچستان", "خیبر پختونخوا"], 2],
+  ["دنیا کی سب سے بلند چوٹی کون سی ہے؟", ["کے ٹو", "ماؤنٹ ایورسٹ", "نانگا پربت", "کلیمنجارو"], 1], ["پاکستان کا قومی کھیل کون سا ہے؟", ["کرکٹ", "ہاکی", "فٹبال", "کبڈی"], 1],
+  ["اسلام کے کتنے ارکان ہیں؟", ["3", "4", "5", "6"], 2], ["قرآن کی پہلی نازل ہونے والی آیات کس سورت کی ہیں؟", ["الفاتحہ", "البقرہ", "العلق", "یٰسین"], 2],
+  ["ہجری سال کا پہلا مہینہ کون سا ہے؟", ["رمضان", "محرم", "رجب", "شوال"], 1], ["خاتم النبیین کا لقب کس کا ہے؟", ["حضرت موسیٰ علیہ السلام", "حضرت عیسیٰ علیہ السلام", "حضرت محمد ﷺ", "حضرت ابراہیم علیہ السلام"], 2],
+  ["قرآن مجید کے کل کتنے پارے ہیں؟", ["20", "25", "30", "40"], 2], ["خانہ کعبہ کس شہر میں ہے؟", ["مدینہ منورہ", "مکہ مکرمہ", "جدہ", "طائف"], 1],
+  ["\"Book\" کا اردو مطلب کیا ہے؟", ["قلم", "کتاب", "کاپی", "بستہ"], 1], ["Opposite of \"Hot\" is:", ["Big", "Cold", "Tall", "Fast"], 1],
+  ["She ___ a student.", ["am", "is", "are", "be"], 1], ["How many days are there in a week?", ["Five", "Six", "Seven", "Eight"], 2],
+  ["Plural of \"child\" is:", ["childs", "children", "childes", "child"], 1], ["Past tense of \"go\" is:", ["goed", "gone", "went", "going"], 2],
+  ["پانی کا کیمیائی فارمولا کیا ہے؟", ["CO2", "H2O", "O2", "NaCl"], 1], ["سورج کس قسم کا فلکی جسم ہے؟", ["سیارہ", "ستارہ", "چاند", "سیارچہ"], 1],
+  ["انسانی جسم میں خون پمپ کرنے والا عضو کون سا ہے؟", ["جگر", "دل", "گردہ", "پھیپھڑے"], 1], ["پودے سورج کی روشنی سے خوراک کیسے بناتے ہیں؟", ["تنفس", "ضیائی تالیف", "تبخیر", "ہضم"], 1],
+  ["ہمارے نظام شمسی کا سب سے بڑا سیارہ کون سا ہے؟", ["زمین", "مریخ", "مشتری", "زحل"], 2], ["ہوا میں سب سے زیادہ مقدار کس گیس کی ہے؟", ["آکسیجن", "نائٹروجن", "کاربن ڈائی آکسائیڈ", "ہائیڈروجن"], 1]];
+async function quizPage(pg) {
+  const d = Math.floor(Date.now() / 864e5), today = new Date().toISOString().slice(0, 10), Q = [0, 1, 2, 3].map(j => QB[(d * 5 + j * 6) % QB.length]); let me = null, top = [];
+  try { const s = await getDoc(doc(db, "quiz", user.uid)); me = s.exists() ? s.data() : null; } catch (e) { console.warn(e); }
+  try { top = (await getDocs(query(collection(db, "quiz"), orderBy("points", "desc"), limit(10)))).docs.map(x => x.data()); } catch (e) { console.warn(e); }
+  const done = me && me.last === today, days = me?.days || 0;
+  pg.innerHTML = `<div class="card hero2"><h2>🧠 ${t().m.quiz}</h2><div>💡 ${dayMsg()}</div></div>
+   <div class="grid" style="margin-block:12px"><div class="card stat"><span>${t().pts}</span><b>${me?.points || 0}</b></div><div class="card stat"><span>🔥 ${t().streak}</span><b>${me?.streak || 0}</b></div><div class="card stat gold"><span>${t().chal14}</span><b>${Math.min(days, 14)}/14</b></div></div>
+   <div id="qz">${done ? `<div class="card">✅ ${t().qDone}</div>` : ""}</div><h3 style="margin-top:16px">🏅 ${t().board}</h3>${top.map((x, i) => `<div class="card row2"><span>${i + 1}. ${esc(x.name)}</span><b>${x.points}</b></div>`).join("") || `<p class="muted">${t().none2}</p>`}`;
+  if (done) return;
+  let i = 0, sc = 0;
+  const finish = async () => { const y = new Date(Date.now() - 864e5).toISOString().slice(0, 10), nd = { name: profile.name, points: (me?.points || 0) + sc * 5, streak: me && me.last === y ? (me.streak || 0) + 1 : 1, days: days + 1, last: today };
+    try { await setDoc(doc(db, "quiz", user.uid), nd); toast("🎉 " + sc + "/" + Q.length); quizPage(pg); } catch (e) { toast(e.code); } };
+  const show = () => { if (i >= Q.length) return finish(); const q = Q[i];
+    $("#qz").innerHTML = `<div class="card"><p class="muted">${i + 1}/${Q.length}</p><h3>${esc(q[0])}</h3>${q[1].map((o, k) => `<button class="btn" data-k="${k}" style="display:block;width:100%;margin-top:8px">${esc(o)}</button>`).join("")}</div>`;
+    document.querySelectorAll("#qz [data-k]").forEach(b => b.onclick = () => { const ok = +b.dataset.k === q[2]; if (ok) sc++; toast(ok ? "✅" : "❌ " + q[1][q[2]]); i++; setTimeout(show, 700); }); };
+  show();
+}
+
 // ---------- ڈیش بورڈ ----------
-const LIVE = ["home", "community", "students", "attendance", "staff", "fees", "finance", "admin", "teachers", "exams", "profile", "children", "results", "notices", "daily", "tatt"];
-const ALL = ["home", "staff", "students", "teachers", "tatt", "attendance", "notices", "daily", "fees", "finance", "exams", "profile", "community"];
+const LIVE = ["home", "community", "students", "attendance", "staff", "fees", "finance", "admin", "teachers", "exams", "profile", "children", "results", "notices", "daily", "tatt", "events", "videos", "awards", "quiz"];
+const ALL = ["home", "staff", "students", "teachers", "tatt", "attendance", "notices", "daily", "events", "videos", "awards", "fees", "finance", "exams", "profile", "quiz", "community"];
 async function dashboard() {
   const st = subState();
   if (profile.blocked) return lockView("acct");
   if (st === "blocked") return lockView("blocked");
   if (st === "locked") return profile.role === "principal" ? payView() : lockView("expired");
-  const viewer = profile.role === "viewer", ok = k => ["home", "community"].includes(k) || (k === "profile" ? profile.role === "principal" : ["staff", "teachers", "tatt"].includes(k) ? BOSS() : can(MP[k]));
+  const viewer = profile.role === "viewer", ok = k => ["home", "community", "quiz"].includes(k) || (k === "profile" ? profile.role === "principal" : ["staff", "teachers", "tatt"].includes(k) ? BOSS() : can(MP[k]));
   const adm = profile.role === "admin", items = adm ? ["home", "admin", "community"] : viewer ? MENU.viewer : profile.role === "parent" ? MENU.parent : ALL.filter(ok), days = Math.max(0, Math.ceil((ms(school?.trialEnds) - Date.now()) / 864e5));
   if (!items.includes(page)) page = "home";
-  app$.innerHTML = header() + `<main class="wrap dash">${viewer ? "" : `<nav class="side" aria-label="${t().menu}">${items.map(k => `<a data-k="${k}" class="${k === page ? "on" : LIVE.includes(k) ? "" : "soon"}">${t().m[k]}</a>`).join("")}</nav>`}<div id="pg"></div></main>`;
-  bindHeader();
+  app$.innerHTML = header() + `<main class="wrap dash">${viewer ? "" : `<nav class="side" aria-label="${t().menu}">${items.map(k => `<a data-k="${k}" class="${k === page ? "on" : LIVE.includes(k) ? "" : "soon"}">${t().m[k]}</a>`).join("")}</nav>`}<div class="col">${viewer ? "" : `<div class="tb"><button class="btn sm" id="pp0">🖨 ${t().print} / PDF</button></div>`}<div id="pg"></div></div></main>`;
+  bindHeader(); if ($("#pp0")) $("#pp0").onclick = printPage;
   document.querySelectorAll(".side a").forEach(a => a.onclick = () => { if (!LIVE.includes(a.dataset.k)) return toast(t().soon); page = a.dataset.k; dashboard(); });
-  const pg = $("#pg"), PGS = profile.role === "parent" ? { community: () => community(pg, false), children: () => parentPage(pg, "children"), notices: () => parentNotices(pg), daily: () => parentDaily(pg), fees: () => parentPage(pg, "fees"), results: () => parentPage(pg, "results") } : { teachers: () => teachersPage(pg), tatt: () => tAttPage(pg), notices: () => noticesPage(pg), daily: () => dailyPage(pg), exams: () => resultsPage(pg), profile: () => profPage(pg), community: () => community(pg, can("post")), students: () => studentsPage(pg), attendance: () => attPage(pg), staff: () => staffPage(pg), fees: () => feesPage(pg), finance: () => finPage(pg), admin: () => adminPage(pg) };
+  const pg = $("#pg"), PGS = profile.role === "parent" ? { community: () => community(pg, false), children: () => parentPage(pg, "children"), quiz: () => quizPage(pg), events: () => eventsPage(pg, false), videos: () => videosPage(pg, false), awards: () => awardsPage(pg, false), notices: () => parentNotices(pg), daily: () => parentDaily(pg), fees: () => parentPage(pg, "fees"), results: () => parentPage(pg, "results") } : { teachers: () => teachersPage(pg), quiz: () => quizPage(pg), events: () => eventsPage(pg, true), videos: () => videosPage(pg, true), awards: () => awardsPage(pg, true), tatt: () => tAttPage(pg), notices: () => noticesPage(pg), daily: () => dailyPage(pg), exams: () => resultsPage(pg), profile: () => profPage(pg), community: () => community(pg, can("post")), students: () => studentsPage(pg), attendance: () => attPage(pg), staff: () => staffPage(pg), fees: () => feesPage(pg), finance: () => finPage(pg), admin: () => adminPage(pg) };
   if (!viewer && PGS[page]) return PGS[page]();
   const needV = !user.emailVerified && ["principal", "viewer"].includes(profile.role);
-  pg.innerHTML = `<div class="welcome"><h2>${t().welcome}، ${esc(profile.name)}</h2><span class="badge">${t().roles[profile.role] || ""}</span></div>
+  pg.innerHTML = `<div class="welcome hero2"><h2>${t().welcome}، ${esc(profile.name)}</h2><span class="badge">${t().roles[profile.role] || ""}</span><div style="flex-basis:100%">💡 ${dayMsg()}</div></div>
    ${needV ? `<div class="warn">${t().verify} <button class="btn sm" id="vr">${t().verified}</button></div>` : ""}
-   ${viewer ? `<p class="muted" style="margin-bottom:16px">${t().pubOnly}</p><div id="cm"></div>` : adm ? "" : `<div class="grid"><div class="card stat"><span class="muted">${esc(school.name)}</span><b>${t().stT[st]}</b></div>${st === "trial" ? `<div class="card stat gold"><span>${t().left}</span><b>${days}</b></div>` : ""}</div>`}`;
+   ${viewer ? `<p class="muted" style="margin-bottom:16px">${t().pubOnly}</p><div class="seg" style="margin-bottom:12px"><button type="button" data-vp="c" class="on">${t().m.community}</button><button type="button" data-vp="q">🧠 ${t().m.quiz}</button></div><div id="cm"></div>` : adm ? "" : `<div class="grid"><div class="card stat"><span class="muted">${esc(school.name)}</span><b>${t().stT[st]}</b></div>${st === "trial" ? `<div class="card stat gold"><span>${t().left}</span><b>${days}</b></div>` : ""}</div>`}`;
   if ($("#vr")) $("#vr").onclick = async () => { await user.reload(); dashboard(); };
-  if (viewer) community($("#cm"), true);
+  if (viewer) { const go = k => { document.querySelectorAll("[data-vp]").forEach(b => b.classList.toggle("on", b.dataset.vp === k)); if (k === "q") quizPage($("#cm")); else community($("#cm"), true); };
+    document.querySelectorAll("[data-vp]").forEach(b => b.onclick = () => go(b.dataset.vp)); go("c"); }
+  if (!viewer && !adm) homeGrid(pg, items);
+  if (BOSS()) statsRow(pg);
   if (profile.role === "principal") followersCard(pg);
 }
 
