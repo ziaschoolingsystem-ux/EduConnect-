@@ -159,6 +159,11 @@ T.ur.m.events="ایونٹس و کیلنڈر";T.en.m.events="Events & calendar";T
 Object.assign(T.ur,{pts:"پوائنٹس",streak:"مسلسل دن",chal14:"14 دن کا چیلنج",qDone:"آج کا کوئز مکمل ہو گیا۔ کل پھر آئیں!",board:"لیڈر بورڈ",qrScan:"QR اسکین (اختیاری)",qrAll:"QR کارڈ پرنٹ",qrAbs:"جو اسکین نہیں ہوئے انہیں غیر حاضر لگائیں؟ (رخصت والے محفوظ رہیں گے)",noQr:"اس فون پر QR اسکین دستیاب نہیں، حاضری ہاتھ سے لگائیں۔",qrStop:"ختم کریں"});
 Object.assign(T.en,{pts:"Points",streak:"Day streak",chal14:"14-day challenge",qDone:"Today's quiz is done. Come back tomorrow!",board:"Leaderboard",qrScan:"Scan QR (optional)",qrAll:"Print QR cards",qrAbs:"Mark everyone not scanned as absent? (those on leave stay unchanged)",noQr:"QR scanning is not available on this phone. Mark attendance by hand.",qrStop:"Finish"});
 T.ur.m.quiz="روزانہ کوئز";T.en.m.quiz="Daily quiz";
+Object.assign(T.ur,{tag2:"تعلیم کی دنیا، ایک جگہ",sub2:"اسکولوں کی پروفائلز، پوسٹس، ایونٹس، روزانہ کوئز اور ٹیچر جابز — سب کے لیے مفت۔",commGo:"کمیونٹی دیکھیں",forSchools:"اسکول مینجمنٹ کے لیے یہاں سے رجسٹر کریں ←",qLogin:"پوائنٹس اور لیڈر بورڈ کے لیے مفت اکاؤنٹ بنائیں۔",annT:"پلیٹ فارم کا اعلان",jtitle:"نوکری کا عنوان",city:"شہر",jdet:"تفصیل",apply:"درخواست دیں",apps:"درخواستیں",sendApp:"بھیجیں"});
+Object.assign(T.en,{tag2:"The world of education, in one place",sub2:"School profiles, posts, events, a daily quiz and teacher jobs — free for everyone.",commGo:"See the community",forSchools:"Register here for school management →",qLogin:"Create a free account for points and the leaderboard.",annT:"Platform announcement",jtitle:"Job title",city:"City",jdet:"Details",apply:"Apply",apps:"Applications",sendApp:"Send"});
+T.ur.m.jobs="ٹیچر جاب پورٹل";T.en.m.jobs="Teacher jobs";
+Object.assign(T.ur,{admOnly:"یہ صفحہ صرف ایڈمن کو کھلتا ہے",af:{all:"کل اسکول",trial:"مفت ٹرائل",active:"سبسکرپشن فعال",expired:"ٹرائل ختم",blocked:"بلاک",pending:"ادائیگی کی تصدیق باقی"},resetT:"ٹرائل ری سیٹ",hide:"پبلک سے چھپائیں",contact:"رابطہ",sureR:"اس اسکول کا ٹرائل نئے سرے سے شروع کریں؟ (پرانی ادائیگی کی تاریخ ختم ہو جائے گی)"});
+Object.assign(T.en,{admOnly:"This page opens only for the admin",af:{all:"All schools",trial:"Free trial",active:"Subscribed",expired:"Trial ended",blocked:"Blocked",pending:"Payment to verify"},resetT:"Reset trial",hide:"Hide from public",contact:"Contact",sureR:"Restart this school's trial? (the old paid-until date will be cleared)"});
 // ہر کردار کو کون سے مینو ملتے ہیں (حصہ 2 میں اجازتوں کے ساتھ جوڑا جائے گا)
 const MENU = { principal:["home","staff","students","teachers","attendance","fees","finance","exams","profile","community","settings"],
   teacher:["home","students","attendance","exams","profile"], finance:["home","fees","finance","community"],
@@ -184,33 +189,41 @@ function bindHeader() {
 
 // ---------- ابتدائی صفحہ + ڈائریکٹری ----------
 async function landing() {
-  app$.innerHTML = header() + `<main><div class="hero"><div class="wrap"><h1>${t().tag}</h1><p>${t().sub}</p>
-   <div class="row"><button class="btn pri" id="r1">${t().reg}</button><button class="btn" id="r2">${t().login}</button><button class="btn" id="r3">${t().demoBtn}</button></div>
-   <div class="price"><span>${t().trial}</span><span>${t().setup}: <b>${CFG.setup.toLocaleString()}</b> ${t().rs}</span><span>${t().price}: <b>${CFG.monthly}</b> ${t().rs}</span></div></div></div>
-   <section class="blk"><div class="wrap steps"><div class="card"><b>1</b>${t().s1}</div><div class="card"><b>2</b>${t().s2}</div><div class="card"><b>3</b>${t().s3}</div></div></section>\n   <section class="blk"><div class="wrap"><h2>${t().dir}</h2><input id="q" placeholder="${t().search}" aria-label="${t().search}"><div class="grid" id="dirl" style="margin-top:16px"></div></div></section><section class="blk"><div class="wrap" id="lfeed"></div></section></main>`;
+  app$.innerHTML = header() + `<main><div class="hero"><div class="wrap"><h1>${t().tag2}</h1><p>${t().sub2}</p>
+   <div class="row"><button class="btn bus" id="r1">🌐 ${t().commGo}</button><button class="btn" id="r4">🧠 ${t().m.quiz}</button><button class="btn" id="r2">${t().login}</button><button class="btn" id="r3">${t().demoBtn}</button></div>
+   <p style="margin-top:16px"><a href="#" id="r5" style="color:#fff">${t().forSchools}</a></p></div></div>
+   <section class="blk"><div class="wrap"><div class="fg"><a class="fc" data-sc="lfeed"><span>🌐</span><b>${t().m.community}</b></a><a class="fc" data-sc="ljs"><span>💼</span><b>${t().m.jobs}</b></a><a class="fc" data-sc="lqs"><span>🧠</span><b>${t().m.quiz}</b></a><a class="fc" data-sc="ldir"><span>🏫</span><b>${t().dir}</b></a></div></div></section>
+   <section class="blk"><div class="wrap"><div id="lann"></div><div id="lad"></div></div></section>
+   <section class="blk"><div class="wrap" id="lqs"><h2>🧠 ${t().m.quiz}</h2><div id="lq"></div></div></section>
+   <section class="blk"><div class="wrap" id="ldir"><h2>${t().dir}</h2><input id="q" placeholder="${t().search}" aria-label="${t().search}"><div class="grid" id="dirl" style="margin-top:16px"></div></div></section>
+   <section class="blk"><div class="wrap" id="ljs"><h2>💼 ${t().m.jobs}</h2><div id="lj"></div></div></section>
+   <section class="blk"><div class="wrap" id="lfeed"></div></section></main>`;
   bindHeader();
-  $("#r1").onclick = () => { tab = "school"; location.hash = "auth"; };
+  $("#r1").onclick = () => $("#lfeed").scrollIntoView({ behavior: "smooth" });
+  $("#r4").onclick = () => $("#lqs").scrollIntoView({ behavior: "smooth" });
+  document.querySelectorAll("[data-sc]").forEach(a => a.onclick = () => { const e = $("#" + a.dataset.sc); if (e) e.scrollIntoView({ behavior: "smooth" }); });
   $("#r2").onclick = () => { tab = "login"; location.hash = "auth"; };
   $("#r3").onclick = () => { location.hash = "demo"; };
-  let list = [], C = {}; getDocs(collection(db, "follows")).then(s => { s.docs.forEach(d => { const k = d.data().schoolId; C[k] = (C[k] || 0) + 1; }); draw(); }).catch(() => {});
+  $("#r5").onclick = e => { e.preventDefault(); tab = "school"; location.hash = "auth"; };
+  let list = [], C = {};
+  const draw = () => { if (!$("#dirl")) return; const q = $("#q").value.trim().toLowerCase(), r = list.filter(s => (s.name || "").toLowerCase().includes(q));
+    $("#dirl").innerHTML = r.length ? r.map(s => schoolCard(s, `<div class="muted" style="margin-top:6px">👥 ${C[s.id] || 0} ${t().followers}</div><button class="btn sm pri" data-lf style="margin-top:8px">${t().follow}</button>`)).join("") : `<p class="muted">${t().none}</p>`; };
+  $("#q").oninput = draw; $("#dirl").onclick = e => { if (e.target.closest("[data-lf]")) { tab = "login"; location.hash = "auth"; } };
+  getDoc(doc(db, "settings", "app")).then(x => { if (x.exists()) Object.assign(CFG, x.data()); if ($("#lann")) { $("#lann").innerHTML = annBox(); $("#lad").innerHTML = adBanner(); } }).catch(() => {});
+  publicQuiz($("#lq")); jobsPage($("#lj"), true); feed($("#lfeed"), false, null, true);
+  getDocs(collection(db, "follows")).then(s => { s.docs.forEach(d => { const k = d.data().schoolId; C[k] = (C[k] || 0) + 1; }); draw(); }).catch(() => {});
   try { list = (await getDocs(query(collection(db, "schools"), where("isPublic", "==", true), where("status", "in", ["trial", "active"])))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
-  const draw = () => {
-    const q = $("#q").value.trim().toLowerCase(), r = list.filter(s => (s.name || "").toLowerCase().includes(q));
-    $("#dirl").innerHTML = r.length ? r.map(s => schoolCard(s, `<div class="muted" style="margin-top:6px">👥 ${C[s.id] || 0} ${t().followers}</div><button class="btn sm pri" data-lf style="margin-top:8px">${t().follow}</button>`)).join("") : `<p class="muted">${t().none}</p>`;
-  };
-  $("#q").oninput = draw; draw();
-  $("#dirl").onclick = e => { if (e.target.closest("[data-lf]")) { tab = "login"; location.hash = "auth"; } };
-  feed($("#lfeed"), false, null, true);
+  draw();
 }
 
 // ---------- لاگ اِن / رجسٹریشن ----------
 function authView() {
   const reg = tab !== "login";
   app$.innerHTML = header() + `<main class="wrap"><div class="card auth">
-   <div class="tabs"><button data-t="school" class="${tab === "school" ? "on" : ""}">${t().tSchool}</button><button data-t="viewer" class="${tab === "viewer" ? "on" : ""}">${t().tViewer}</button><button data-t="login" class="${tab === "login" ? "on" : ""}">${t().login}</button></div>
+   <div class="tabs"><button data-t="login" class="${tab === "login" ? "on" : ""}">${t().login}</button><button data-t="viewer" class="${tab === "viewer" ? "on" : ""}">${t().tViewer}</button><button data-t="school" class="${tab === "school" ? "on" : ""}">${t().tSchool}</button></div>
    <form id="f" novalidate>
    ${reg ? `<label for="n">${t().name}</label><input id="n" autocomplete="name">` : ""}
-   ${tab === "school" ? `<label for="s">${t().school}</label><input id="s"><label for="a">${t().address}</label><input id="a">` : ""}
+   ${tab === "school" ? `<label for="s">${t().school}</label><input id="s"><label for="a">${t().address}</label><input id="a"><p class="muted" style="margin-top:12px">${t().trial} · ${t().setup}: ${CFG.setup.toLocaleString()} ${t().rs} · ${t().price}: ${CFG.monthly} ${t().rs}</p>` : ""}
    <label for="e">${t().email}</label><input id="e" type="email" dir="ltr" autocomplete="email">
    <label for="p">${t().pass}</label><input id="p" type="password" dir="ltr" autocomplete="${reg ? "new" : "current"}-password">
    <div class="err" id="er"></div>
@@ -247,7 +260,7 @@ function authView() {
 
 // ---------- سبسکرپشن کی حالت (ٹرائل → ادائیگی → فعال، ورنہ بند) ----------
 let page = "home";
-const ms = x => x?.toDate ? x.toDate().getTime() : 0;
+const ms = x => x?.toDate ? x.toDate().getTime() : x instanceof Date ? x.getTime() : 0;
 function subState() {
   if (!school) return "ok"; const n = Date.now();
   if (school.status === "blocked") return "blocked";
@@ -411,23 +424,39 @@ async function finPage(pg) {
 }
 
 // ---------- ایڈمن پینل (صرف مالک ایپ) ----------
-const fmt = x => x?.toDate ? x.toDate().toLocaleDateString() : "—";
+const fmt = x => x?.toDate ? x.toDate().toLocaleDateString() : x instanceof Date ? x.toLocaleDateString() : "—";
 async function adminPage(pg) {
-  const P = CFG.pay, f = (id, lb, v) => `<div><label>${lb}</label><input id="${id}" value="${esc(v)}"></div>`;
-  pg.innerHTML = `<h2>${t().m.admin}</h2><div class="card"><h3>${t().prices}</h3><div class="grid">${f("a1", t().trialD, CFG.trialDays)}${f("a2", t().price, CFG.monthly)}${f("a3", t().setup, CFG.setup)}${f("a4", "Bank", P.bankName)}${f("a5", t().acT, P.title)}${f("a6", t().acNo, P.account)}${f("a7", "IBAN", P.iban)}${f("a8", "Easypaisa", P.easypaisa)}${f("a9", "Easypaisa " + t().acT, P.epTitle)}</div><button class="btn pri" id="asv" style="margin-top:12px">${t().save}</button></div>
-   <div class="card" id="adc"></div><h2>${t().reports}</h2><div id="rl3"></div><h2>${t().schools}</h2><div id="al"></div>`;
-  adminExtras(); $("#asv").onclick = async () => { const v = i => $("#" + i).value.trim(), n = { trialDays: v("a1") === "" || isNaN(+v("a1")) ? 7 : +v("a1"), monthly: +v("a2"), setup: +v("a3"), pay: { bankName: v("a4"), title: v("a5"), account: v("a6"), iban: v("a7"), easypaisa: v("a8"), epTitle: v("a9") } };
+  const P = CFG.pay, f = (id, lb, v) => `<div><label>${lb}</label><input id="${id}" value="${esc(v)}"></div>`, KS = ["all", "trial", "active", "expired", "blocked", "pending"];
+  pg.innerHTML = `<h2>${t().m.admin}</h2><p class="muted">🔒 ${esc(user.email)} · ${t().admOnly}</p><div id="as0"></div>
+   <input id="asq" placeholder="${t().search}" style="margin-block:10px"><div class="seg" id="asf" style="flex-wrap:wrap;margin-bottom:12px">${KS.map((k, i) => `<button type="button" data-f="${k}" class="${i ? "" : "on"}">${t().af[k]}</button>`).join("")}</div><div id="al"></div>
+   <h2 style="margin-top:20px">${t().reports}</h2><div id="rl3"></div><div class="card" id="adc"></div>
+   <div class="card"><h3>${t().prices}</h3><div class="grid">${f("a1", t().trialD, CFG.trialDays)}${f("a2", t().price, CFG.monthly)}${f("a3", t().setup, CFG.setup)}${f("a4", "Bank", P.bankName)}${f("a5", t().acT, P.title)}${f("a6", t().acNo, P.account)}${f("a7", "IBAN", P.iban)}${f("a8", "Easypaisa", P.easypaisa)}${f("a9", "Easypaisa " + t().acT, P.epTitle)}</div><button class="btn pri" id="asv" style="margin-top:12px">${t().save}</button></div>`;
+  adminExtras();
+  $("#asv").onclick = async () => { const v = i => $("#" + i).value.trim(), n = { trialDays: v("a1") === "" || isNaN(+v("a1")) ? 7 : +v("a1"), monthly: +v("a2"), setup: +v("a3"), pay: { bankName: v("a4"), title: v("a5"), account: v("a6"), iban: v("a7"), easypaisa: v("a8"), epTitle: v("a9") } };
     try { await setDoc(doc(db, "settings", "app"), n, { merge: true }); Object.assign(CFG, n); toast(t().saved); } catch (e) { toast(e.code); } };
-  const load = async () => { let L = []; try { L = (await getDocs(collection(db, "schools"))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { toast(e.code); }
-    for (const s of L) { try { s.pay = (await getDocs(query(collection(db, "schools", s.id, "paymentRequests"), where("status", "==", "pending")))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { s.pay = []; } }
-    $("#al").innerHTML = L.map(s => `<div class="card"><div class="row2"><div><b>${esc(s.name)}</b> <span class="badge">${esc(s.status)}</span><div class="muted">${t().trialD}: ${fmt(s.trialEnds)} · ${t().paidTill}: ${fmt(s.paidUntil)}</div></div></div>
+  let L = [], flt = "all";
+  const stOf = s => s.status === "blocked" ? "blocked" : ms(s.paidUntil) > Date.now() ? "active" : ms(s.trialEnds) > Date.now() ? "trial" : "expired";
+  const ext = async s => { const d = { paidUntil: new Date(Math.max(Date.now(), ms(s.paidUntil)) + 30 * 864e5), status: "active" }; await updateDoc(doc(db, "schools", s.id), d); Object.assign(s, d); };
+  const upd = async (s, d) => { try { await updateDoc(doc(db, "schools", s.id), d); Object.assign(s, d); draw(); } catch (e) { toast(e.code); } };
+  const draw = () => { const q = $("#asq").value.trim().toLowerCase(), c = { all: L.length, trial: 0, active: 0, expired: 0, blocked: 0, pending: 0 };
+    L.forEach(s => { c[stOf(s)]++; if (s.pay.length) c.pending++; });
+    $("#as0").innerHTML = `<div class="grid">${KS.map(k => `<div class="card stat"><span>${t().af[k]}</span><b>${c[k]}</b></div>`).join("")}</div>`;
+    const R = L.filter(s => (s.name || "").toLowerCase().includes(q) && (flt === "all" || (flt === "pending" ? s.pay.length : stOf(s) === flt)));
+    $("#al").innerHTML = R.map(s => `<div class="card"><b>${esc(s.name)}</b> <span class="badge">${t().af[stOf(s)]}</span><div class="muted">${esc(s.address)}</div><div class="muted">${t().trialD}: ${fmt(s.trialEnds)} · ${t().paidTill}: ${fmt(s.paidUntil)}</div>
       ${s.pay.map(p => `<div class="row2"><span>💰 ${esc(p.method)} · <span dir="ltr">${esc(p.tid)}</span> · ${p.amount}</span><button class="btn sm pri" data-ok="${s.id}|${p.id}">${t().approve}</button></div>`).join("")}
-      <button class="btn sm" data-p="${s.id}">${t().plus30}</button> <button class="btn sm" data-b="${s.id}|${s.status === "blocked" ? "active" : "blocked"}">${s.status === "blocked" ? t().unblock : t().block}</button></div>`).join("");
-    const ext = async id => { const s = L.find(x => x.id === id), base = Math.max(Date.now(), ms(s.paidUntil)); await updateDoc(doc(db, "schools", id), { paidUntil: new Date(base + 30 * 864e5), status: "active" }); };
-    document.querySelectorAll("[data-ok]").forEach(b => b.onclick = async () => { const [sid, pid] = b.dataset.ok.split("|"); try { await ext(sid); await updateDoc(doc(db, "schools", sid, "paymentRequests", pid), { status: "approved" }); load(); } catch (e) { toast(e.code); } });
-    document.querySelectorAll("[data-p]").forEach(b => b.onclick = async () => { try { await ext(b.dataset.p); load(); } catch (e) { toast(e.code); } });
-    document.querySelectorAll("[data-b]").forEach(b => b.onclick = async () => { const [sid, v] = b.dataset.b.split("|"); try { await updateDoc(doc(db, "schools", sid), { status: v }); load(); } catch (e) { toast(e.code); } }); };
-  load();
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><button class="btn sm" data-p="${s.id}">${t().plus30}</button><button class="btn sm" data-b="${s.id}">${s.status === "blocked" ? t().unblock : t().block}</button><button class="btn sm" data-rs="${s.id}">${t().resetT}</button><button class="btn sm" data-v="${s.id}">${s.isPublic ? t().hide : t().show}</button><button class="btn sm" data-ct="${s.id}">${t().contact}</button></div><div id="c_${s.id}" class="muted" dir="ltr" style="margin-top:6px"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    const S = a => L.find(x => x.id === a);
+    document.querySelectorAll("#al [data-ok]").forEach(b => b.onclick = async () => { const [sid, pid] = b.dataset.ok.split("|"), s = S(sid); try { await ext(s); await updateDoc(doc(db, "schools", sid, "paymentRequests", pid), { status: "approved" }); s.pay = s.pay.filter(p => p.id !== pid); draw(); } catch (e) { toast(e.code); } });
+    document.querySelectorAll("#al [data-p]").forEach(b => b.onclick = async () => { try { await ext(S(b.dataset.p)); draw(); } catch (e) { toast(e.code); } });
+    document.querySelectorAll("#al [data-b]").forEach(b => b.onclick = () => { const s = S(b.dataset.b); upd(s, { status: s.status === "blocked" ? (ms(s.paidUntil) > Date.now() ? "active" : "trial") : "blocked" }); });
+    document.querySelectorAll("#al [data-rs]").forEach(b => b.onclick = () => { if (confirm(t().sureR)) upd(S(b.dataset.rs), { trialEnds: new Date(Date.now() + CFG.trialDays * 864e5), paidUntil: null, status: "trial" }); });
+    document.querySelectorAll("#al [data-v]").forEach(b => b.onclick = () => { const s = S(b.dataset.v); upd(s, { isPublic: !s.isPublic }); });
+    document.querySelectorAll("#al [data-ct]").forEach(b => b.onclick = async () => { try { const u = (await getDoc(doc(db, "users", b.dataset.ct))).data(); $("#c_" + b.dataset.ct).textContent = u ? `${u.name} — ${u.email}` : "—"; } catch (e) { toast(e.code); } }); };
+  $("#asq").oninput = draw;
+  document.querySelectorAll("#asf [data-f]").forEach(b => b.onclick = () => { flt = b.dataset.f; document.querySelectorAll("#asf [data-f]").forEach(x => x.classList.toggle("on", x === b)); draw(); });
+  try { L = (await getDocs(collection(db, "schools"))).docs.map(d => ({ id: d.id, ...d.data(), pay: [] })); } catch (e) { toast(e.code); }
+  await Promise.all(L.map(async s => { try { s.pay = (await getDocs(query(collection(db, "schools", s.id, "paymentRequests"), where("status", "==", "pending")))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { s.pay = []; } }));
+  draw();
 }
 
 // ---------- اسکول کارڈ (عوامی پروفائل) ----------
@@ -518,7 +547,7 @@ async function stuProfile(pg, s, back) {
 // ---------- کمیونٹی: اسکول تلاش، فالو، فالوورز، فیڈ ----------
 const ytId = u => { const m = (u || "").match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([A-Za-z0-9_-]{11})/); return m ? m[1] : ""; };
 async function community(box, canPost) {
-  box.innerHTML = adBanner() + `<input id="vq" placeholder="${t().findS}" style="margin-bottom:12px"><div class="grid" id="vs" style="margin-bottom:20px"></div><div id="fd"></div>`;
+  box.innerHTML = annBox() + adBanner() + `<input id="vq" placeholder="${t().findS}" style="margin-bottom:12px"><div class="grid" id="vs" style="margin-bottom:20px"></div><div id="fd"></div>`;
   const F = new Set(), C = {}; let SL = [];
   try { (await getDocs(collection(db, "follows"))).docs.forEach(d => { const x = d.data(); C[x.schoolId] = (C[x.schoolId] || 0) + 1; if (x.uid === user.uid) F.add(x.schoolId); }); } catch (e) { console.warn(e); }
   try { SL = (await getDocs(query(collection(db, "schools"), where("isPublic", "==", true)))).docs.map(d => ({ id: d.id, ...d.data() })).filter(x => x.status !== "blocked"); } catch (e) { console.warn(e); }
@@ -540,10 +569,10 @@ const adBanner = () => { const A = CFG.ad; return A && A.on && /^https:\/\//.tes
 // ---------- ایڈمن: بینر کی ترتیب اور شکایات ----------
 async function adminExtras() {
   const A = CFG.ad || {};
-  $("#adc").innerHTML = `<h3>${t().adT}</h3><label>${t().adTx}</label><input id="ad1" value="${esc(A.text || "")}"><label>${t().adLink}</label><input id="ad2" dir="ltr" value="${esc(A.link || "")}"><label>${t().logo}</label><input id="ad3" type="file" accept="image/*"><label class="ck"><input type="checkbox" id="ad4" ${A.on ? "checked" : ""}> ${t().adOn}</label><button class="btn pri" id="ad5" style="margin-top:10px">${t().save}</button>`;
+  $("#adc").innerHTML = `<h3>${t().adT}</h3><label>${t().adTx}</label><input id="ad1" value="${esc(A.text || "")}"><label>${t().adLink}</label><input id="ad2" dir="ltr" value="${esc(A.link || "")}"><label>${t().logo}</label><input id="ad3" type="file" accept="image/*"><label>${t().annT}</label><input id="ad6" value="${esc(CFG.announce || "")}"><label class="ck"><input type="checkbox" id="ad4" ${A.on ? "checked" : ""}> ${t().adOn}</label><button class="btn pri" id="ad5" style="margin-top:10px">${t().save}</button>`;
   $("#ad5").onclick = async () => { const f = $("#ad3").files[0], a = { text: $("#ad1").value.trim(), link: $("#ad2").value.trim(), on: $("#ad4").checked, img: f ? await shrink(f) : (A.img || "") };
     if (a.link && !/^https:\/\//.test(a.link)) return toast(t().adBad);
-    try { await setDoc(doc(db, "settings", "app"), { ad: a }, { merge: true }); CFG.ad = a; toast(t().saved); } catch (e) { toast(e.code); } };
+    try { const an = $("#ad6").value.trim(); await setDoc(doc(db, "settings", "app"), { ad: a, announce: an }, { merge: true }); CFG.ad = a; CFG.announce = an; toast(t().saved); } catch (e) { toast(e.code); } };
   let R = []; try { R = (await getDocs(query(collection(db, "reports"), where("status", "==", "open")))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
   $("#rl3").innerHTML = R.map(x => `<div class="card"><p>🚩 ${esc(x.text)}</p><p class="muted">${esc(x.byName)}</p><button class="btn sm" data-dp="${x.id}|${x.postId}">${t().delPost}</button> <button class="btn sm" data-bu="${x.id}|${x.posterId}">${t().blockU}</button> <button class="btn sm" data-ig="${x.id}">${t().ignore}</button></div>`).join("") || `<p class="muted">${t().none2}</p>`;
   const done = async id => { await updateDoc(doc(db, "reports", id), { status: "closed" }); adminExtras(); };
@@ -619,7 +648,7 @@ function demoView() {
 }
 
 // ---------- ہر صفحے کا پرنٹ / PDF ----------
-const IC = { home: "🏠", staff: "👥", students: "🎓", teachers: "👩‍🏫", tatt: "🗓️", attendance: "✅", notices: "📢", daily: "📖", fees: "💰", finance: "📊", exams: "📝", profile: "🏫", community: "🌐", events: "📅", awards: "🏆", videos: "🎥", children: "👨‍👩‍👧", results: "📝", admin: "⚙️", quiz: "🧠" };
+const IC = { home: "🏠", staff: "👥", students: "🎓", teachers: "👩‍🏫", tatt: "🗓️", attendance: "✅", notices: "📢", daily: "📖", fees: "💰", finance: "📊", exams: "📝", profile: "🏫", community: "🌐", events: "📅", awards: "🏆", videos: "🎥", children: "👨‍👩‍👧", results: "📝", admin: "⚙️", quiz: "🧠", jobs: "💼" };
 function printPage() {
   const pg = $("#pg"), c = pg.cloneNode(true), o = pg.querySelectorAll("input,select"), n = c.querySelectorAll("input,select");
   n.forEach((el, i) => { const x = o[i], s = document.createElement("span"); s.textContent = x.type === "checkbox" ? (x.checked ? "☑" : "☐") : x.tagName === "SELECT" ? (x.selectedOptions[0]?.text || "") : x.type === "file" ? "" : x.value; el.replaceWith(s); });
@@ -772,28 +801,57 @@ async function quizPage(pg) {
   show();
 }
 
+// ---------- عوامی کوئز (لاگ اِن کے بغیر)، پلیٹ فارم کا اعلان ----------
+const annBox = () => CFG.announce ? `<div class="card" style="border-color:var(--bus);background:#FFF8E1;margin-bottom:12px">📢 ${esc(CFG.announce)}</div>` : "";
+function publicQuiz(box) {
+  const d = Math.floor(Date.now() / 864e5), Q = [0, 1, 2, 3].map(j => QB[(d * 5 + j * 6) % QB.length]); let i = 0, sc = 0;
+  const show = () => { if (i >= Q.length) { box.innerHTML = `<div class="card"><h3>🎉 ${sc}/${Q.length}</h3><p class="muted">${t().qLogin}</p><button class="btn pri" id="ql">${t().login}</button></div>`; $("#ql").onclick = () => { tab = "viewer"; location.hash = "auth"; }; return; }
+    const q = Q[i]; box.innerHTML = `<div class="card"><p class="muted">${i + 1}/${Q.length}</p><h3>${esc(q[0])}</h3>${q[1].map((o, k) => `<button class="btn" data-k="${k}" style="display:block;width:100%;margin-top:8px">${esc(o)}</button>`).join("")}</div>`;
+    box.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { const ok = +b.dataset.k === q[2]; if (ok) sc++; toast(ok ? "✅" : "❌ " + q[1][q[2]]); i++; setTimeout(show, 700); }); };
+  show();
+}
+
+// ---------- ٹیچر جاب پورٹل ----------
+async function jobsPage(box, ro) {
+  const post = !ro && profile && profile.schoolId && BOSS();
+  box.innerHTML = `${post ? `<form class="card" id="jf"><div class="grid"><div><label>${t().jtitle}</label><input id="j1"></div><div><label>${t().subj}</label><input id="j2"></div><div><label>${t().city}</label><input id="j3"></div></div><label>${t().jdet}</label><input id="j4"><button class="btn pri" style="margin-top:12px">${t().publish}</button></form>` : ""}<div id="jl"></div>`;
+  const load = async () => { let L = []; try { L = (await getDocs(query(collection(db, "jobs"), orderBy("createdAt", "desc"), limit(30)))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
+    if (!$("#jl")) return;
+    $("#jl").innerHTML = L.map(x => `<div class="card"><b>💼 ${esc(x.title)}</b> <span class="muted">${esc(x.subj)} · ${esc(x.city)}</span><div class="muted">🏫 ${esc(x.schoolName)}</div><p>${esc(x.details)}</p>${ro || !profile ? `<button class="btn sm pri" data-lg>${t().loginI}</button>` : x.schoolId === profile.schoolId ? `<button class="btn sm" data-ap="${x.id}">${t().apps}</button> <button class="btn sm" data-d="${x.id}">✕</button>` : `<button class="btn sm pri" data-ap="${x.id}">${t().apply}</button>`}<div id="a_${x.id}"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    document.querySelectorAll("#jl [data-lg]").forEach(b => b.onclick = () => { tab = "login"; location.hash = "auth"; });
+    document.querySelectorAll("#jl [data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; try { await deleteDoc(doc(db, "jobs", b.dataset.d)); load(); } catch (e) { toast(e.code); } });
+    document.querySelectorAll("#jl [data-ap]").forEach(b => b.onclick = async () => { const id = b.dataset.ap, x = L.find(z => z.id === id), b2 = $("#a_" + id);
+      if (x.schoolId === profile.schoolId) { let A = []; try { A = (await getDocs(collection(db, "jobs", id, "apps"))).docs.map(d => d.data()); } catch (e) { toast(e.code); }
+        b2.innerHTML = A.map(a => `<div class="muted">👤 ${esc(a.name)} — <span dir="ltr">${esc(a.phone)}</span> — ${esc(a.msg)}</div>`).join("") || `<p class="muted">${t().none2}</p>`; return; }
+      b2.innerHTML = `<input id="ap1" dir="ltr" placeholder="${t().phone}" style="margin-top:8px"><input id="ap2" placeholder="${t().jdet}" style="margin-top:8px"><button class="btn sm pri" id="ap3" style="margin-top:8px">${t().sendApp}</button>`;
+      $("#ap3").onclick = async () => { try { await setDoc(doc(db, "jobs", id, "apps", user.uid), { uid: user.uid, name: profile.name, phone: $("#ap1").value.trim(), msg: $("#ap2").value.trim(), createdAt: serverTimestamp() }); toast(t().saved); b2.innerHTML = ""; } catch (e) { toast(e.code); } }; }); };
+  if (post) $("#jf").onsubmit = async e => { e.preventDefault(); const v = i => $("#" + i).value.trim(); if (!v("j1")) return toast(t().need);
+    try { await addDoc(collection(db, "jobs"), { schoolId: profile.schoolId, schoolName: school.name, title: v("j1"), subj: v("j2"), city: v("j3"), details: v("j4"), createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
+  load();
+}
+
 // ---------- ڈیش بورڈ ----------
-const LIVE = ["home", "community", "students", "attendance", "staff", "fees", "finance", "admin", "teachers", "exams", "profile", "children", "results", "notices", "daily", "tatt", "events", "videos", "awards", "quiz"];
-const ALL = ["home", "staff", "students", "teachers", "tatt", "attendance", "notices", "daily", "events", "videos", "awards", "fees", "finance", "exams", "profile", "quiz", "community"];
+const LIVE = ["home", "community", "students", "attendance", "staff", "fees", "finance", "admin", "teachers", "exams", "profile", "children", "results", "notices", "daily", "tatt", "events", "videos", "awards", "quiz", "jobs"];
+const ALL = ["home", "staff", "students", "teachers", "tatt", "attendance", "notices", "daily", "events", "videos", "awards", "fees", "finance", "exams", "profile", "quiz", "jobs", "community"];
 async function dashboard() {
   const st = subState();
   if (profile.blocked) return lockView("acct");
   if (st === "blocked") return lockView("blocked");
   if (st === "locked") return profile.role === "principal" ? payView() : lockView("expired");
-  const viewer = profile.role === "viewer", ok = k => ["home", "community", "quiz"].includes(k) || (k === "profile" ? profile.role === "principal" : ["staff", "teachers", "tatt"].includes(k) ? BOSS() : can(MP[k]));
+  const viewer = profile.role === "viewer", ok = k => ["home", "community", "quiz", "jobs"].includes(k) || (k === "profile" ? profile.role === "principal" : ["staff", "teachers", "tatt"].includes(k) ? BOSS() : can(MP[k]));
   const adm = profile.role === "admin", items = adm ? ["home", "admin", "community"] : viewer ? MENU.viewer : profile.role === "parent" ? MENU.parent : ALL.filter(ok), days = Math.max(0, Math.ceil((ms(school?.trialEnds) - Date.now()) / 864e5));
   if (!items.includes(page)) page = "home";
   app$.innerHTML = header() + `<main class="wrap dash">${viewer ? "" : `<nav class="side" aria-label="${t().menu}">${items.map(k => `<a data-k="${k}" class="${k === page ? "on" : LIVE.includes(k) ? "" : "soon"}">${t().m[k]}</a>`).join("")}</nav>`}<div class="col">${viewer ? "" : `<div class="tb"><button class="btn sm" id="pp0">🖨 ${t().print} / PDF</button></div>`}<div id="pg"></div></div></main>`;
   bindHeader(); if ($("#pp0")) $("#pp0").onclick = printPage;
   document.querySelectorAll(".side a").forEach(a => a.onclick = () => { if (!LIVE.includes(a.dataset.k)) return toast(t().soon); page = a.dataset.k; dashboard(); });
-  const pg = $("#pg"), PGS = profile.role === "parent" ? { community: () => community(pg, false), children: () => parentPage(pg, "children"), quiz: () => quizPage(pg), events: () => eventsPage(pg, false), videos: () => videosPage(pg, false), awards: () => awardsPage(pg, false), notices: () => parentNotices(pg), daily: () => parentDaily(pg), fees: () => parentPage(pg, "fees"), results: () => parentPage(pg, "results") } : { teachers: () => teachersPage(pg), quiz: () => quizPage(pg), events: () => eventsPage(pg, true), videos: () => videosPage(pg, true), awards: () => awardsPage(pg, true), tatt: () => tAttPage(pg), notices: () => noticesPage(pg), daily: () => dailyPage(pg), exams: () => resultsPage(pg), profile: () => profPage(pg), community: () => community(pg, can("post")), students: () => studentsPage(pg), attendance: () => attPage(pg), staff: () => staffPage(pg), fees: () => feesPage(pg), finance: () => finPage(pg), admin: () => adminPage(pg) };
+  const pg = $("#pg"), PGS = profile.role === "parent" ? { community: () => community(pg, false), children: () => parentPage(pg, "children"), jobs: () => jobsPage(pg, false), quiz: () => quizPage(pg), events: () => eventsPage(pg, false), videos: () => videosPage(pg, false), awards: () => awardsPage(pg, false), notices: () => parentNotices(pg), daily: () => parentDaily(pg), fees: () => parentPage(pg, "fees"), results: () => parentPage(pg, "results") } : { teachers: () => teachersPage(pg), jobs: () => jobsPage(pg, false), quiz: () => quizPage(pg), events: () => eventsPage(pg, true), videos: () => videosPage(pg, true), awards: () => awardsPage(pg, true), tatt: () => tAttPage(pg), notices: () => noticesPage(pg), daily: () => dailyPage(pg), exams: () => resultsPage(pg), profile: () => profPage(pg), community: () => community(pg, can("post")), students: () => studentsPage(pg), attendance: () => attPage(pg), staff: () => staffPage(pg), fees: () => feesPage(pg), finance: () => finPage(pg), admin: () => adminPage(pg) };
   if (!viewer && PGS[page]) return PGS[page]();
   const needV = !user.emailVerified && ["principal", "viewer"].includes(profile.role);
   pg.innerHTML = `<div class="welcome hero2"><h2>${t().welcome}، ${esc(profile.name)}</h2><span class="badge">${t().roles[profile.role] || ""}</span><div style="flex-basis:100%">💡 ${dayMsg()}</div></div>
    ${needV ? `<div class="warn">${t().verify} <button class="btn sm" id="vr">${t().verified}</button></div>` : ""}
-   ${viewer ? `<p class="muted" style="margin-bottom:16px">${t().pubOnly}</p><div class="seg" style="margin-bottom:12px"><button type="button" data-vp="c" class="on">${t().m.community}</button><button type="button" data-vp="q">🧠 ${t().m.quiz}</button></div><div id="cm"></div>` : adm ? "" : `<div class="grid"><div class="card stat"><span class="muted">${esc(school.name)}</span><b>${t().stT[st]}</b></div>${st === "trial" ? `<div class="card stat gold"><span>${t().left}</span><b>${days}</b></div>` : ""}</div>`}`;
+   ${viewer ? `<p class="muted" style="margin-bottom:16px">${t().pubOnly}</p><div class="seg" style="margin-bottom:12px"><button type="button" data-vp="c" class="on">${t().m.community}</button><button type="button" data-vp="q">🧠 ${t().m.quiz}</button><button type="button" data-vp="j">💼 ${t().m.jobs}</button></div><div id="cm"></div>` : adm ? "" : `<div class="grid"><div class="card stat"><span class="muted">${esc(school.name)}</span><b>${t().stT[st]}</b></div>${st === "trial" ? `<div class="card stat gold"><span>${t().left}</span><b>${days}</b></div>` : ""}</div>`}`;
   if ($("#vr")) $("#vr").onclick = async () => { await user.reload(); dashboard(); };
-  if (viewer) { const go = k => { document.querySelectorAll("[data-vp]").forEach(b => b.classList.toggle("on", b.dataset.vp === k)); if (k === "q") quizPage($("#cm")); else community($("#cm"), true); };
+  if (viewer) { const go = k => { document.querySelectorAll("[data-vp]").forEach(b => b.classList.toggle("on", b.dataset.vp === k)); if (k === "q") quizPage($("#cm")); else if (k === "j") jobsPage($("#cm"), false); else community($("#cm"), true); };
     document.querySelectorAll("[data-vp]").forEach(b => b.onclick = () => go(b.dataset.vp)); go("c"); }
   if (!viewer && !adm) homeGrid(pg, items);
   if (BOSS()) statsRow(pg);
