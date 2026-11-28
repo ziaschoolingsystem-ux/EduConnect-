@@ -81,6 +81,7 @@ label{display:block;font-weight:500;margin-block:12px 4px}
 .adb{display:flex;align-items:center;gap:12px;background:#fff;border:2px dashed var(--bus);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;text-decoration:none;color:var(--ink)}.adb img{height:48px;border-radius:8px}.adb small{margin-inline-start:auto;color:var(--ink2);font-size:.75rem}
 .hero2{background:linear-gradient(135deg,#0B5D44,#14A06A);color:#fff;border-radius:22px;padding:20px 22px}.hero2 h2{color:#fff}.tb{text-align:end;margin-bottom:10px}.fg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.fc{background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px 8px;text-align:center;cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center;color:var(--ink);transition:.15s}.fc:hover{transform:translateY(-3px)}.fc span{font-size:2rem;line-height:1.2}.fc:nth-child(4n+1){background:#EAF7FF}.fc:nth-child(4n+2){background:#FFF4E0}.fc:nth-child(4n+3){background:#F1ECFF}.fc:nth-child(4n){background:#EAFBF1}@media(min-width:760px){.fg{grid-template-columns:repeat(4,1fr)}}
 .qrov{position:fixed;inset:0;background:#000;z-index:20;display:flex;flex-direction:column}.qrov video{flex:1;object-fit:cover;width:100%;min-height:0}.qrb{display:flex;justify-content:space-between;align-items:center;padding:14px;color:#fff;font-size:1.6rem}.qc{display:inline-block;width:190px;border:1px solid #999;padding:10px;margin:6px;text-align:center;vertical-align:top;color:#000}
+.bdg{background:#FF5D5D;color:#fff;border-radius:999px;padding:0 7px;margin-inline-start:4px;font-size:.8rem;display:none}
 </style>
 </head>
 <body>
@@ -166,6 +167,10 @@ Object.assign(T.ur,{admOnly:"یہ صفحہ صرف ایڈمن کو کھلتا ہ�
 Object.assign(T.en,{admOnly:"This page opens only for the admin",af:{all:"All schools",trial:"Free trial",active:"Subscribed",expired:"Trial ended",blocked:"Blocked",pending:"Payment to verify"},resetT:"Reset trial",hide:"Hide from public",contact:"Contact",sureR:"Restart this school's trial? (the old paid-until date will be cleared)"});
 Object.assign(T.ur,{trialPlus:"ٹرائل +7 دن",feeBtn:"اس اسکول کی فیس",feeQ:"ماہانہ فیس (روپے):",setupQ:"سیٹ اپ فیس (روپے):"});
 Object.assign(T.en,{trialPlus:"Trial +7 days",feeBtn:"This school's fee",feeQ:"Monthly fee (PKR):",setupQ:"Setup fee (PKR):"});
+Object.assign(T.ur,{board2:"اسکول ایونٹس و اعلانات",pubOut:"باہر سب کو دکھائیں",loading:"لوڈ ہو رہا ہے…",more:"مزید دکھائیں",jobLim:"آج کی ایک نوکری پہلے ہی شائع ہو چکی ہے۔ کل دوبارہ کوشش کریں۔"});
+Object.assign(T.en,{board2:"School events & notices",pubOut:"Show to everyone outside",loading:"Loading…",more:"Show more",jobLim:"You have already posted one job today. Try again tomorrow."});
+Object.assign(T.ur,{waGroup:"واٹس ایپ گروپ میں بھیجیں"});
+Object.assign(T.en,{waGroup:"Send to a WhatsApp group"});
 // ہر کردار کو کون سے مینو ملتے ہیں (حصہ 2 میں اجازتوں کے ساتھ جوڑا جائے گا)
 const MENU = { principal:["home","staff","students","teachers","attendance","fees","finance","exams","profile","community","settings"],
   teacher:["home","students","attendance","exams","profile"], finance:["home","fees","finance","community"],
@@ -180,11 +185,12 @@ const LOGO = `<i><svg viewBox="0 0 100 100"><path d="M10 40L50 20l40 20-40 20zM2
 
 function header() {
   return `<header class="top"><div class="wrap"><div class="logo" onclick="location.hash=''">${LOGO}</div>
-  <button class="btn sm" id="lg">${lang === "ur" ? "English" : "اردو"}</button>
+  ${user && profile && profile.role === "parent" ? `<button class="btn sm" id="bell">🔔<span id="bn" class="bdg"></span></button>` : ""}<button class="btn sm" id="lg">${lang === "ur" ? "English" : "اردو"}</button>
   ${user ? `<button class="btn sm" id="out">${t().logout}</button>` : `<button class="btn sm pri" id="in">${t().login}</button>`}</div></header>`;
 }
 function bindHeader() {
   $("#lg").onclick = () => setLang(lang === "ur" ? "en" : "ur");
+  if ($("#bell")) { $("#bell").onclick = () => { page = "notices"; dashboard(); }; bellUpdate(); }
   if ($("#out")) $("#out").onclick = () => signOut(auth);
   if ($("#in")) $("#in").onclick = () => { tab = "login"; location.hash = "auth"; };
 }
@@ -194,8 +200,9 @@ async function landing() {
   app$.innerHTML = header() + `<main><div class="hero"><div class="wrap"><h1>${t().tag2}</h1><p>${t().sub2}</p>
    <div class="row"><button class="btn bus" id="r1">🌐 ${t().commGo}</button><button class="btn" id="r4">🧠 ${t().m.quiz}</button><button class="btn" id="r2">${t().login}</button><button class="btn" id="r3">${t().demoBtn}</button></div>
    <p style="margin-top:16px"><a href="#" id="r5" style="color:#fff">${t().forSchools}</a></p></div></div>
-   <section class="blk"><div class="wrap"><div class="fg"><a class="fc" data-sc="lfeed"><span>🌐</span><b>${t().m.community}</b></a><a class="fc" data-sc="ljs"><span>💼</span><b>${t().m.jobs}</b></a><a class="fc" data-sc="lqs"><span>🧠</span><b>${t().m.quiz}</b></a><a class="fc" data-sc="ldir"><span>🏫</span><b>${t().dir}</b></a></div></div></section>
+   <section class="blk"><div class="wrap"><div class="fg"><a class="fc" data-sc="lfeed"><span>🌐</span><b>${t().m.community}</b></a><a class="fc" data-sc="ljs"><span>💼</span><b>${t().m.jobs}</b></a><a class="fc" data-sc="lbd"><span>📅</span><b>${t().board2}</b></a><a class="fc" data-sc="lqs"><span>🧠</span><b>${t().m.quiz}</b></a><a class="fc" data-sc="ldir"><span>🏫</span><b>${t().dir}</b></a><a class="fc" id="bdemo"><span>🎬</span><b>${t().demoBtn}</b></a></div></div></section>
    <section class="blk"><div class="wrap"><div id="lann"></div><div id="lad"></div></div></section>
+   <section class="blk"><div class="wrap" id="lbd"><h2>📅 ${t().board2}</h2><div id="lbx"></div></div></section>
    <section class="blk"><div class="wrap" id="lqs"><h2>🧠 ${t().m.quiz}</h2><div id="lq"></div></div></section>
    <section class="blk"><div class="wrap" id="ldir"><h2>${t().dir}</h2><input id="q" placeholder="${t().search}" aria-label="${t().search}"><div class="grid" id="dirl" style="margin-top:16px"></div></div></section>
    <section class="blk"><div class="wrap" id="ljs"><h2>💼 ${t().m.jobs}</h2><div id="lj"></div></div></section>
@@ -203,6 +210,7 @@ async function landing() {
   bindHeader();
   $("#r1").onclick = () => $("#lfeed").scrollIntoView({ behavior: "smooth" });
   $("#r4").onclick = () => $("#lqs").scrollIntoView({ behavior: "smooth" });
+  $("#bdemo").onclick = () => { location.hash = "demo"; };
   document.querySelectorAll("[data-sc]").forEach(a => a.onclick = () => { const e = $("#" + a.dataset.sc); if (e) e.scrollIntoView({ behavior: "smooth" }); });
   $("#r2").onclick = () => { tab = "login"; location.hash = "auth"; };
   $("#r3").onclick = () => { location.hash = "demo"; };
@@ -212,7 +220,7 @@ async function landing() {
     $("#dirl").innerHTML = r.length ? r.map(s => schoolCard(s, `<div class="muted" style="margin-top:6px">👥 ${C[s.id] || 0} ${t().followers}</div><button class="btn sm pri" data-lf style="margin-top:8px">${t().follow}</button>`)).join("") : `<p class="muted">${t().none}</p>`; };
   $("#q").oninput = draw; $("#dirl").onclick = e => { if (e.target.closest("[data-lf]")) { tab = "login"; location.hash = "auth"; } };
   getDoc(doc(db, "settings", "app")).then(x => { if (x.exists()) Object.assign(CFG, x.data()); if ($("#lann")) { $("#lann").innerHTML = annBox(); $("#lad").innerHTML = adBanner(); } }).catch(() => {});
-  publicQuiz($("#lq")); jobsPage($("#lj"), true); feed($("#lfeed"), false, null, true);
+  publicQuiz($("#lq")); boardBox($("#lbx")); jobsPage($("#lj"), true); feed($("#lfeed"), false, null, true);
   getDocs(collection(db, "follows")).then(s => { s.docs.forEach(d => { const k = d.data().schoolId; C[k] = (C[k] || 0) + 1; }); draw(); }).catch(() => {});
   try { list = (await getDocs(query(collection(db, "schools"), where("isPublic", "==", true), where("status", "in", ["trial", "active"])))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
   draw();
@@ -298,11 +306,11 @@ const BOSS = () => ["principal", "manager"].includes(profile.role);
 const can = p => BOSS() || (profile.perms || []).includes(p);
 const SID = () => profile.schoolId, MP = { students: "students", attendance: "attendance", fees: "fees", finance: "finance", exams: "results", notices: "notices", daily: "attendance", events: "notices", videos: "notices", awards: "results" };
 const staffAuth = getAuth(initializeApp(firebaseConfig, "staff"));
-const shrink = f => new Promise(r => { const i = new Image(); i.onload = () => { const k = Math.min(1, 800 / Math.max(i.width, i.height)), c = document.createElement("canvas"); c.width = i.width * k; c.height = i.height * k; c.getContext("2d").drawImage(i, 0, 0, c.width, c.height); r(c.toDataURL("image/jpeg", .6)); }; i.src = URL.createObjectURL(f); });
+const shrink = f => new Promise(r => { const i = new Image(); i.onload = () => { const k = Math.min(1, 640 / Math.max(i.width, i.height)), c = document.createElement("canvas"); c.width = i.width * k; c.height = i.height * k; c.getContext("2d").drawImage(i, 0, 0, c.width, c.height); r(c.toDataURL("image/jpeg", .5)); }; i.src = URL.createObjectURL(f); });
 
 // ---------- پوسٹس / ایونٹس / تبصرے ----------
 async function feed(box, canPost, fset, ro) {
-  const mine = p => !!profile && (profile.role === "admin" || (p.schoolId === (profile.schoolId || user.uid) && (profile.role === "viewer" || can("post")))); let only = false;
+  const mine = p => !!profile && (profile.role === "admin" || (p.schoolId === (profile.schoolId || user.uid) && (profile.role === "viewer" || can("post")))); let only = false, lim = 12;
   box.innerHTML = `${canPost ? `<form class="card" id="cf"><select id="ck" style="width:auto"><option value="post">${t().post}</option><option value="event">${t().event}</option></select>
    <input id="ct" placeholder="${t().write}" style="margin-block:10px"><input id="cp" type="file" accept="image/*" aria-label="${t().photo}"><input id="cv" dir="ltr" placeholder="${t().vid}" style="margin-top:10px"><button class="btn pri sm" style="margin-top:10px">${t().publish}</button></form>` : ""}${fset ? `<div class="seg" style="margin-bottom:12px"><button type="button" data-m="all" class="on">${t().all}</button><button type="button" data-m="fol">${t().following}</button></div>` : ""}<h2>${t().feed}</h2><div id="fl"></div>`;
   box.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { only = b.dataset.m === "fol"; box.querySelectorAll("[data-m]").forEach(x => x.classList.toggle("on", x === b)); draw(); });
@@ -314,10 +322,11 @@ async function feed(box, canPost, fset, ro) {
       try { await addDoc(collection(db, "publicPosts", id, "comments"), { text: v, name: profile.name, uid: user.uid, createdAt: serverTimestamp() }); loadC(id); } catch (x) { toast(x.code); } };
   };
   const draw = async () => {
-    let r = []; try { r = (await getDocs(query(collection(db, "publicPosts"), orderBy("createdAt", "desc"), limit(30)))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
+    let r = []; try { r = (await getDocs(query(collection(db, "publicPosts"), orderBy("createdAt", "desc"), limit(lim)))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
     if (only && fset) r = r.filter(p => fset.has(p.schoolId));
     $("#fl").innerHTML = r.length ? r.map(p => `<article class="card post ${p.kind}"><div class="school"><div class="av">${esc((p.schoolName || "?")[0])}</div><div><b>${esc(p.schoolName)}</b><div class="muted">${p.kind === "event" ? "📅 " + t().event : ""}</div></div></div>
       <p>${esc(p.text)}</p>${p.img ? `<img src="${p.img}" alt="">` : ""}${p.video ? `<iframe src="https://www.youtube-nocookie.com/embed/${esc(p.video)}" loading="lazy" allowfullscreen></iframe>` : ""}${ro ? `<span class="muted">❤ ${p.likes || 0}</span> <button class="btn sm" data-lg>${t().loginI}</button>` : `<button class="btn sm" data-l="${p.id}">❤ ${p.likes || 0}</button> <button class="btn sm" data-c="${p.id}">💬</button>`} ${mine(p) ? `<button class="btn sm" data-x="${p.id}">🗑</button>` : ""}${!ro && profile && !mine(p) ? ` <button class="btn sm" data-r="${p.id}">🚩</button>` : ""}<div class="cm" id="c_${p.id}" hidden></div></article>`).join("") : `<p class="muted">${t().nofeed}</p>`;
+    if (r.length >= lim) { $("#fl").insertAdjacentHTML("beforeend", `<button class="btn" id="fm" style="width:100%">${t().more}</button>`); $("#fm").onclick = () => { lim += 12; draw(); }; }
     document.querySelectorAll("[data-l]").forEach(b => b.onclick = async () => { try { await updateDoc(doc(db, "publicPosts", b.dataset.l), { likes: increment(1) }); draw(); } catch (e) { toast(e.code); } });
     document.querySelectorAll("[data-c]").forEach(b => b.onclick = () => loadC(b.dataset.c));
     document.querySelectorAll("[data-lg]").forEach(b => b.onclick = () => { tab = "login"; location.hash = "auth"; });
@@ -377,7 +386,7 @@ async function staffPage(pg) {
   let S0 = []; try { S0 = (await getDocs(collection(db, "schools", SID(), "students"))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
   const lab = p => `<label class="ck"><input type="checkbox" value="${p}"> ${PL[lang][p]}</label>`;
   pg.innerHTML = `<h2>${t().m.staff}</h2><p class="muted">${t().staffNote}</p><form class="card" id="tf"><label>${t().name}</label><input id="tn"><label>${t().email}</label><input id="te" type="email" dir="ltr"><label>${t().pass}</label><input id="tp" dir="ltr">
-   <label>${t().role}</label><select id="tr">${["teacher", "finance", "manager", "parent"].map(r => `<option value="${r}">${t().roles[r]}</option>`).join("")}</select><div id="pm" style="margin-top:10px">${PERMS.map(lab).join("")}</div><div id="kids" hidden><label>${t().kids}</label><select id="kc" multiple size="5">${S0.map(s => `<option value="${s.id}">${esc(s.name)} — ${esc(s.cls)} #${esc(s.roll)}</option>`).join("")}</select></div><div class="err" id="er"></div><button class="btn pri">${t().add}</button></form><div id="tl"></div>`;
+   <label>${t().role}</label><select id="tr">${["teacher", "finance", "manager", "parent"].map(r => `<option value="${r}">${t().roles[r]}</option>`).join("")}</select><div id="pm" style="margin-top:10px">${PERMS.map(lab).join("")}</div><div id="kids" hidden><label>${t().phone} (${t().opt})</label><input id="tph" dir="ltr"><label>${t().kids}</label><select id="kc" multiple size="5">${S0.map(s => `<option value="${s.id}">${esc(s.name)} — ${esc(s.cls)} #${esc(s.roll)}</option>`).join("")}</select></div><div class="err" id="er"></div><button class="btn pri">${t().add}</button></form><div id="tl"></div>`;
   const setP = () => { const r = $("#tr").value; document.querySelectorAll("#pm input").forEach(i => i.checked = (PRESET[r] || []).includes(i.value)); $("#pm").hidden = ["parent", "manager"].includes(r); $("#kids").hidden = r !== "parent"; }; setP(); $("#tr").onchange = setP;
   const load = async () => { let L = []; try { L = (await getDocs(query(collection(db, "users"), where("schoolId", "==", SID())))).docs.map(d => ({ id: d.id, ...d.data() })).filter(u => u.id !== user.uid); } catch (e) { toast(e.code); }
     $("#tl").innerHTML = L.map(u => `<div class="card"><div class="row2"><div><b>${esc(u.name)}</b> <span class="badge">${t().roles[u.role] || ""}</span><div class="muted" dir="ltr">${esc(u.email)}</div></div><button class="btn sm" data-x="${u.id}">✕</button></div>
@@ -389,7 +398,7 @@ async function staffPage(pg) {
     if (!v("tn") || !/^\S+@\S+\.\S+$/.test(v("te")) || v("tp").length < 6) return er(t().need);
     const role = v("tr"), perms = role === "manager" ? [] : [...document.querySelectorAll("#pm input:checked")].map(x => x.value);
     try { const c = await createUserWithEmailAndPassword(staffAuth, v("te"), v("tp")); await signOut(staffAuth);
-      await setDoc(doc(db, "users", c.user.uid), { name: v("tn"), email: v("te"), role, perms, ...(role === "parent" ? { children: [...$("#kc").selectedOptions].map(o => o.value) } : {}), schoolId: SID(), createdAt: serverTimestamp() });
+      await setDoc(doc(db, "users", c.user.uid), { name: v("tn"), email: v("te"), role, perms, ...(role === "parent" ? { children: [...$("#kc").selectedOptions].map(o => o.value), phone: $("#tph").value.trim() } : {}), schoolId: SID(), createdAt: serverTimestamp() });
       e.target.reset(); setP(); toast(t().staffDone); load(); } catch (x) { er(x.code); } };
   load();
 }
@@ -553,8 +562,11 @@ const ytId = u => { const m = (u || "").match(/(?:youtu\.be\/|v=|shorts\/|embed\
 async function community(box, canPost) {
   box.innerHTML = annBox() + adBanner() + `<input id="vq" placeholder="${t().findS}" style="margin-bottom:12px"><div class="grid" id="vs" style="margin-bottom:20px"></div><div id="fd"></div>`;
   const F = new Set(), C = {}; let SL = [];
+  await Promise.all([(async () => {
   try { (await getDocs(collection(db, "follows"))).docs.forEach(d => { const x = d.data(); C[x.schoolId] = (C[x.schoolId] || 0) + 1; if (x.uid === user.uid) F.add(x.schoolId); }); } catch (e) { console.warn(e); }
+  })(), (async () => {
   try { SL = (await getDocs(query(collection(db, "schools"), where("isPublic", "==", true)))).docs.map(d => ({ id: d.id, ...d.data() })).filter(x => x.status !== "blocked"); } catch (e) { console.warn(e); }
+  })()]);
   const drawS = () => { const q = $("#vq").value.trim().toLowerCase();
     $("#vs").innerHTML = SL.filter(x => (x.name || "").toLowerCase().includes(q)).map(x => schoolCard(x, `<div class="muted" style="margin-top:6px">👥 ${C[x.id] || 0} ${t().followers}</div>${x.id === profile.schoolId ? "" : `<button class="btn sm ${F.has(x.id) ? "" : "pri"}" data-f="${x.id}" style="margin-top:8px">${F.has(x.id) ? t().following : t().follow}</button>`}`)).join("") || `<p class="muted">${t().none}</p>`;
     document.querySelectorAll("[data-f]").forEach(b => b.onclick = async () => { const id = b.dataset.f, k = user.uid + "_" + id, w = writeBatch(db), a = doc(db, "follows", k), n = doc(db, "fnames", k);
@@ -588,15 +600,17 @@ async function adminExtras() {
 // ---------- اعلانات اور ہوم ورک ----------
 async function noticesPage(pg) {
   const col = collection(db, "schools", SID(), "notices");
-  pg.innerHTML = `<h2>${t().m.notices}</h2><form class="card" id="nf2"><div class="grid"><div><label>${t().type}</label><select id="n1"><option value="notice">${t().notice}</option><option value="homework">${t().hw}</option></select></div><div><label>${t().cls} (${t().opt})</label><input id="n2"></div></div><label>${t().note}</label><input id="n3"><button class="btn pri" style="margin-top:12px">${t().add}</button></form><div id="nl2"></div>`;
+  pg.innerHTML = `<h2>${t().m.notices}</h2><form class="card" id="nf2"><div class="grid"><div><label>${t().type}</label><select id="n1"><option value="notice">${t().notice}</option><option value="homework">${t().hw}</option></select></div><div><label>${t().cls} (${t().opt})</label><input id="n2"></div></div><label>${t().note}</label><input id="n3"><label class="ck"><input type="checkbox" id="n4"> ${t().pubOut}</label><button class="btn pri" style="margin-top:12px">${t().add}</button></form><div id="nl2"></div>`;
   const load = async () => { let L = []; try { L = (await getDocs(query(col, orderBy("createdAt", "desc"), limit(50)))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { toast(e.code); }
-    $("#nl2").innerHTML = L.map(x => `<div class="card row2"><div><b>${x.type === "homework" ? "📚" : "📢"} ${esc(x.cls || t().all)}</b><div>${esc(x.text)}</div></div><button class="btn sm" data-d="${x.id}">✕</button></div>`).join("") || `<p class="muted">${t().none2}</p>`;
-    document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); load(); }); };
+    $("#nl2").innerHTML = L.map((x, i) => `<div class="card row2" style="flex-wrap:wrap"><div><b>${x.type === "homework" ? "📚" : "📢"} ${esc(x.cls || t().all)}</b><div>${esc(x.text)}</div></div><span><button class="btn sm" data-wa="${i}">📲</button> <button class="btn sm" data-d="${x.id}">✕</button></span><div id="w_${i}" style="flex-basis:100%"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    document.querySelectorAll("[data-wa]").forEach(b => b.onclick = () => waPanel(L[+b.dataset.wa], $("#w_" + b.dataset.wa)));
+    document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); deleteDoc(doc(db, "publicBoard", b.dataset.d)).catch(() => {}); load(); }); };
   $("#nf2").onsubmit = async e => { e.preventDefault(); const x = $("#n3").value.trim(); if (!x) return toast(t().need);
-    try { await addDoc(col, { type: $("#n1").value, cls: $("#n2").value.trim(), text: x, by: profile.name, createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (err) { toast(err.code); } };
+    try { const ref = await addDoc(col, { type: $("#n1").value, cls: $("#n2").value.trim(), text: x, by: profile.name, createdAt: serverTimestamp() }); if ($("#n4").checked) await setDoc(doc(db, "publicBoard", ref.id), { type: "notice", schoolId: SID(), schoolName: school.name, text: x, createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (err) { toast(err.code); } };
   load();
 }
 async function parentNotices(pg) {
+  markSeen();
   const cl = new Set(); for (const id of profile.children || []) { try { const d = await getDoc(doc(db, "schools", SID(), "students", id)); if (d.exists()) cl.add(d.data().cls); } catch (e) { console.warn(e); } }
   let L = []; try { L = (await getDocs(query(collection(db, "schools", SID(), "notices"), orderBy("createdAt", "desc"), limit(50)))).docs.map(d => d.data()); } catch (e) { console.warn(e); }
   pg.innerHTML = `<h2>${t().m.notices}</h2>` + (L.filter(x => !x.cls || cl.has(x.cls)).map(x => `<div class="card"><b>${x.type === "homework" ? "📚" : "📢"} ${esc(x.cls || "")}</b><div>${esc(x.text)}</div></div>`).join("") || `<p class="muted">${t().none2}</p>`);
@@ -674,14 +688,16 @@ async function statsRow(pg) {
 
 // ---------- ایونٹس اور کیلنڈر ----------
 async function eventsPage(pg, canEdit) {
+  if (!canEdit) markSeen();
   const col = collection(db, "schools", SID(), "events"), ET = { exam: "📝", holiday: "🏖️", meeting: "👪", event: "🎉", admission: "🎓" };
-  pg.innerHTML = `<h2>${t().m.events}</h2>${canEdit ? `<form class="card" id="ef"><div class="grid"><div><label>${t().date}</label><input id="e1" type="date"></div><div><label>${t().type}</label><select id="e2">${Object.keys(ET).map(k => `<option value="${k}">${ET[k]} ${t()["ev_" + k]}</option>`).join("")}</select></div></div><label>${t().etitle}</label><input id="e3"><button class="btn pri" style="margin-top:12px">${t().add}</button></form>` : ""}<div id="el"></div>`;
+  pg.innerHTML = `<h2>${t().m.events}</h2>${canEdit ? `<form class="card" id="ef"><div class="grid"><div><label>${t().date}</label><input id="e1" type="date"></div><div><label>${t().type}</label><select id="e2">${Object.keys(ET).map(k => `<option value="${k}">${ET[k]} ${t()["ev_" + k]}</option>`).join("")}</select></div></div><label>${t().etitle}</label><input id="e3"><label class="ck"><input type="checkbox" id="e4"> ${t().pubOut}</label><button class="btn pri" style="margin-top:12px">${t().add}</button></form>` : ""}<div id="el"></div>`;
   const load = async () => { let L = []; try { L = (await getDocs(col)).docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => a.date.localeCompare(b.date)); } catch (e) { toast(e.code); }
     const today = new Date().toISOString().slice(0, 10);
-    $("#el").innerHTML = L.map(x => `<div class="card row2" style="${x.date < today ? "opacity:.55" : ""}"><div><b>${ET[x.type] || "📌"} ${esc(x.title)}</b><div class="muted">${esc(x.date)}</div></div>${canEdit ? `<button class="btn sm" data-d="${x.id}">✕</button>` : ""}</div>`).join("") || `<p class="muted">${t().none2}</p>`;
-    document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); load(); }); };
+    $("#el").innerHTML = L.map(x => `<div class="card row2" style="flex-wrap:wrap;${x.date < today ? "opacity:.55" : ""}"><div><b>${ET[x.type] || "📌"} ${esc(x.title)}</b><div class="muted">${esc(x.date)}</div></div>${canEdit ? `<span><button class="btn sm" data-wa="${x.id}">📲</button> <button class="btn sm" data-d="${x.id}">✕</button></span>` : ""}<div id="w_${x.id}" style="flex-basis:100%"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    document.querySelectorAll("[data-wa]").forEach(b => b.onclick = () => { const z = L.find(q => q.id === b.dataset.wa); waPanel({ type: "event", title: z.title, date: z.date }, $("#w_" + z.id)); });
+    document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); deleteDoc(doc(db, "publicBoard", b.dataset.d)).catch(() => {}); load(); }); };
   if (canEdit) $("#ef").onsubmit = async e => { e.preventDefault(); if (!$("#e1").value || !$("#e3").value.trim()) return toast(t().need);
-    try { await addDoc(col, { date: $("#e1").value, type: $("#e2").value, title: $("#e3").value.trim(), createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
+    try { const ref = await addDoc(col, { date: $("#e1").value, type: $("#e2").value, title: $("#e3").value.trim(), createdAt: serverTimestamp() }); if ($("#e4").checked) await setDoc(doc(db, "publicBoard", ref.id), { type: "event", schoolId: SID(), schoolName: school.name, title: $("#e3").value.trim(), date: $("#e1").value, createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
   load();
 }
 
@@ -817,21 +833,48 @@ function publicQuiz(box) {
 
 // ---------- ٹیچر جاب پورٹل ----------
 async function jobsPage(box, ro) {
-  const post = !ro && profile && profile.schoolId && BOSS();
+  const post = !ro && !!profile;
   box.innerHTML = `${post ? `<form class="card" id="jf"><div class="grid"><div><label>${t().jtitle}</label><input id="j1"></div><div><label>${t().subj}</label><input id="j2"></div><div><label>${t().city}</label><input id="j3"></div></div><label>${t().jdet}</label><input id="j4"><button class="btn pri" style="margin-top:12px">${t().publish}</button></form>` : ""}<div id="jl"></div>`;
   const load = async () => { let L = []; try { L = (await getDocs(query(collection(db, "jobs"), orderBy("createdAt", "desc"), limit(30)))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
     if (!$("#jl")) return;
-    $("#jl").innerHTML = L.map(x => `<div class="card"><b>💼 ${esc(x.title)}</b> <span class="muted">${esc(x.subj)} · ${esc(x.city)}</span><div class="muted">🏫 ${esc(x.schoolName)}</div><p>${esc(x.details)}</p>${ro || !profile ? `<button class="btn sm pri" data-lg>${t().loginI}</button>` : x.schoolId === profile.schoolId ? `<button class="btn sm" data-ap="${x.id}">${t().apps}</button> <button class="btn sm" data-d="${x.id}">✕</button>` : `<button class="btn sm pri" data-ap="${x.id}">${t().apply}</button>`}<div id="a_${x.id}"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+    $("#jl").innerHTML = L.map(x => `<div class="card"><b>💼 ${esc(x.title)}</b> <span class="muted">${esc(x.subj)} · ${esc(x.city)}</span><div class="muted">${x.schoolId ? "🏫" : "👤"} ${esc(x.by || x.schoolName)}</div><p>${esc(x.details)}</p>${ro || !profile ? `<button class="btn sm pri" data-lg>${t().loginI}</button>` : x.uid === user.uid ? `<button class="btn sm" data-ap="${x.id}">${t().apps}</button> <button class="btn sm" data-d="${x.id}">✕</button>` : `<button class="btn sm pri" data-ap="${x.id}">${t().apply}</button>`}<div id="a_${x.id}"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
     document.querySelectorAll("#jl [data-lg]").forEach(b => b.onclick = () => { tab = "login"; location.hash = "auth"; });
     document.querySelectorAll("#jl [data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; try { await deleteDoc(doc(db, "jobs", b.dataset.d)); load(); } catch (e) { toast(e.code); } });
     document.querySelectorAll("#jl [data-ap]").forEach(b => b.onclick = async () => { const id = b.dataset.ap, x = L.find(z => z.id === id), b2 = $("#a_" + id);
-      if (x.schoolId === profile.schoolId) { let A = []; try { A = (await getDocs(collection(db, "jobs", id, "apps"))).docs.map(d => d.data()); } catch (e) { toast(e.code); }
+      if (x.uid === user.uid) { let A = []; try { A = (await getDocs(collection(db, "jobs", id, "apps"))).docs.map(d => d.data()); } catch (e) { toast(e.code); }
         b2.innerHTML = A.map(a => `<div class="muted">👤 ${esc(a.name)} — <span dir="ltr">${esc(a.phone)}</span> — ${esc(a.msg)}</div>`).join("") || `<p class="muted">${t().none2}</p>`; return; }
       b2.innerHTML = `<input id="ap1" dir="ltr" placeholder="${t().phone}" style="margin-top:8px"><input id="ap2" placeholder="${t().jdet}" style="margin-top:8px"><button class="btn sm pri" id="ap3" style="margin-top:8px">${t().sendApp}</button>`;
       $("#ap3").onclick = async () => { try { await setDoc(doc(db, "jobs", id, "apps", user.uid), { uid: user.uid, name: profile.name, phone: $("#ap1").value.trim(), msg: $("#ap2").value.trim(), createdAt: serverTimestamp() }); toast(t().saved); b2.innerHTML = ""; } catch (e) { toast(e.code); } }; }); };
   if (post) $("#jf").onsubmit = async e => { e.preventDefault(); const v = i => $("#" + i).value.trim(); if (!v("j1")) return toast(t().need);
-    try { await addDoc(collection(db, "jobs"), { schoolId: profile.schoolId, schoolName: school.name, title: v("j1"), subj: v("j2"), city: v("j3"), details: v("j4"), createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code); } };
+    try { const day = new Date().toISOString().slice(0, 10).replace(/-/g, ""); await setDoc(doc(db, "jobs", user.uid + "_" + day), { uid: user.uid, day, by: school?.name || profile.name, schoolId: profile.schoolId || "", title: v("j1"), subj: v("j2"), city: v("j3"), details: v("j4"), createdAt: serverTimestamp() }); e.target.reset(); load(); } catch (x) { toast(x.code === "permission-denied" ? t().jobLim : x.code); } };
   load();
+}
+
+// ---------- عوامی بورڈ: اسکولوں کے ایونٹس اور اعلانات (سب کو نظر آئیں) ----------
+async function boardBox(box) {
+  let L = []; try { L = (await getDocs(query(collection(db, "publicBoard"), orderBy("createdAt", "desc"), limit(20)))).docs.map(d => d.data()); } catch (e) { console.warn(e); }
+  if (!box.isConnected) return;
+  box.innerHTML = L.map(x => `<div class="card"><b>${x.type === "event" ? "📅" : "📢"} ${esc(x.title || x.text)}</b>${x.date ? ` <span class="muted">${esc(x.date)}</span>` : ""}<div class="muted">🏫 ${esc(x.schoolName)}</div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+}
+
+// ---------- 🔔 والدین کی گھنٹی اور واٹس ایپ شیئر ----------
+let bellC = { t: 0, n: 0 };
+const markSeen = () => { try { localStorage.setItem("seen_" + user.uid, String(Date.now())); } catch (e) { /* نظرانداز */ } bellC = { t: Date.now(), n: 0 }; const e = $("#bn"); if (e) e.style.display = "none"; };
+async function bellUpdate() {
+  if (!profile || profile.role !== "parent" || !$("#bn")) return;
+  const show = n => { const e = $("#bn"); if (e) { e.textContent = n || ""; e.style.display = n ? "inline-block" : "none"; } };
+  if (Date.now() - bellC.t < 60000) return show(bellC.n);
+  const seen = +localStorage.getItem("seen_" + user.uid) || 0, cl = new Set(); let n = 0;
+  for (const id of profile.children || []) { try { const d = await getDoc(doc(db, "schools", SID(), "students", id)); if (d.exists()) cl.add(d.data().cls); } catch (e) { console.warn(e); } }
+  for (const c of ["notices", "events"]) { try { (await getDocs(query(collection(db, "schools", SID(), c), orderBy("createdAt", "desc"), limit(30)))).docs.forEach(d => { const x = d.data(), m = x.createdAt?.toMillis ? x.createdAt.toMillis() : 0; if (m > seen && (!x.cls || cl.has(x.cls))) n++; }); } catch (e) { console.warn(e); } }
+  bellC = { t: Date.now(), n }; show(n);
+}
+const waText = x => `${x.type === "homework" ? "📚" : x.type === "event" ? "📅" : "📢"} ${school?.name || ""}\n${x.cls ? x.cls + ": " : ""}${x.text || x.title || ""}${x.date ? "\n📅 " + x.date : ""}`;
+const waNum = p => { const d = (p || "").replace(/\D/g, ""); return d.startsWith("92") ? d : d.startsWith("0") ? "92" + d.slice(1) : d; };
+async function waPanel(x, box) {
+  const txt = encodeURIComponent(waText(x)); let P = [];
+  if (profile.role === "principal") { try { P = (await getDocs(query(collection(db, "users"), where("schoolId", "==", SID())))).docs.map(d => d.data()).filter(u => u.role === "parent" && u.phone); } catch (e) { console.warn(e); } }
+  box.innerHTML = `<div style="margin-top:8px"><a class="btn sm pri" target="_blank" rel="noopener" href="https://wa.me/?text=${txt}">📲 ${t().waGroup}</a></div>${P.map(u => `<div class="row2" style="margin-top:6px"><span>${esc(u.name)}</span><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/${waNum(u.phone)}?text=${txt}">📲</a></div>`).join("")}`;
 }
 
 // ---------- ڈیش بورڈ ----------
@@ -849,7 +892,7 @@ async function dashboard() {
   bindHeader(); if ($("#pp0")) $("#pp0").onclick = printPage;
   document.querySelectorAll(".side a").forEach(a => a.onclick = () => { if (!LIVE.includes(a.dataset.k)) return toast(t().soon); page = a.dataset.k; dashboard(); });
   const pg = $("#pg"), PGS = profile.role === "parent" ? { community: () => community(pg, false), children: () => parentPage(pg, "children"), jobs: () => jobsPage(pg, false), quiz: () => quizPage(pg), events: () => eventsPage(pg, false), videos: () => videosPage(pg, false), awards: () => awardsPage(pg, false), notices: () => parentNotices(pg), daily: () => parentDaily(pg), fees: () => parentPage(pg, "fees"), results: () => parentPage(pg, "results") } : { teachers: () => teachersPage(pg), jobs: () => jobsPage(pg, false), quiz: () => quizPage(pg), events: () => eventsPage(pg, true), videos: () => videosPage(pg, true), awards: () => awardsPage(pg, true), tatt: () => tAttPage(pg), notices: () => noticesPage(pg), daily: () => dailyPage(pg), exams: () => resultsPage(pg), profile: () => profPage(pg), community: () => community(pg, can("post")), students: () => studentsPage(pg), attendance: () => attPage(pg), staff: () => staffPage(pg), fees: () => feesPage(pg), finance: () => finPage(pg), admin: () => adminPage(pg) };
-  if (!viewer && PGS[page]) return PGS[page]();
+  if (!viewer && PGS[page]) { pg.innerHTML = `<div class="card"><p class="muted">⏳ ${t().loading}</p></div>`; return PGS[page](); }
   const needV = !user.emailVerified && ["principal", "viewer"].includes(profile.role);
   pg.innerHTML = `<div class="welcome hero2"><h2>${t().welcome}، ${esc(profile.name)}</h2><span class="badge">${t().roles[profile.role] || ""}</span><div style="flex-basis:100%">💡 ${dayMsg()}</div></div>
    ${needV ? `<div class="warn">${t().verify} <button class="btn sm" id="vr">${t().verified}</button></div>` : ""}
@@ -872,7 +915,7 @@ getDoc(doc(db,"settings","app")).then(x=>{ if(x.exists()) Object.assign(CFG,x.da
 onAuthStateChanged(auth, async u => {
   user = u; profile = school = null;
   if (u) {
-    try { await u.reload(); } catch (e) {}
+    u.reload().then(() => { if (u.emailVerified && document.querySelector("#vr")) dashboard(); }).catch(() => {});
     // نیا اکاؤنٹ بنتے وقت دستاویز لکھنے میں لمحہ لگ سکتا ہے، اس لیے دوبارہ کوشش
     for (let i = 0; i < 5 && !profile; i++) { const s = await getDoc(doc(db, "users", u.uid)); if (s.exists()) { profile = s.data(); profile.role = String(profile.role || "").trim().toLowerCase(); } else await new Promise(r => setTimeout(r, 600)); }
     if (profile?.schoolId) school = (await getDoc(doc(db, "schools", profile.schoolId))).data();
