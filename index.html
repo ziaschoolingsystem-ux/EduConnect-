@@ -164,6 +164,8 @@ Object.assign(T.en,{tag2:"The world of education, in one place",sub2:"School pro
 T.ur.m.jobs="ٹیچر جاب پورٹل";T.en.m.jobs="Teacher jobs";
 Object.assign(T.ur,{admOnly:"یہ صفحہ صرف ایڈمن کو کھلتا ہے",af:{all:"کل اسکول",trial:"مفت ٹرائل",active:"سبسکرپشن فعال",expired:"ٹرائل ختم",blocked:"بلاک",pending:"ادائیگی کی تصدیق باقی"},resetT:"ٹرائل ری سیٹ",hide:"پبلک سے چھپائیں",contact:"رابطہ",sureR:"اس اسکول کا ٹرائل نئے سرے سے شروع کریں؟ (پرانی ادائیگی کی تاریخ ختم ہو جائے گی)"});
 Object.assign(T.en,{admOnly:"This page opens only for the admin",af:{all:"All schools",trial:"Free trial",active:"Subscribed",expired:"Trial ended",blocked:"Blocked",pending:"Payment to verify"},resetT:"Reset trial",hide:"Hide from public",contact:"Contact",sureR:"Restart this school's trial? (the old paid-until date will be cleared)"});
+Object.assign(T.ur,{trialPlus:"ٹرائل +7 دن",feeBtn:"اس اسکول کی فیس",feeQ:"ماہانہ فیس (روپے):",setupQ:"سیٹ اپ فیس (روپے):"});
+Object.assign(T.en,{trialPlus:"Trial +7 days",feeBtn:"This school's fee",feeQ:"Monthly fee (PKR):",setupQ:"Setup fee (PKR):"});
 // ہر کردار کو کون سے مینو ملتے ہیں (حصہ 2 میں اجازتوں کے ساتھ جوڑا جائے گا)
 const MENU = { principal:["home","staff","students","teachers","attendance","fees","finance","exams","profile","community","settings"],
   teacher:["home","students","attendance","exams","profile"], finance:["home","fees","finance","community"],
@@ -272,7 +274,7 @@ async function payView() {
   let pend = []; try { pend = (await getDocs(query(collection(db, "schools", profile.schoolId, "paymentRequests"), where("status", "==", "pending")))).docs.map(d => d.data()); } catch (e) { console.warn(e); }
   if (pend.length) { app$.innerHTML = header() + `<main class="wrap"><div class="card auth" style="text-align:center"><h2>⏳ ${t().waitT}</h2><p class="muted">${t().waitN}</p><p dir="ltr"><b>${esc(pend[0].tid)}</b> — ${pend[0].amount}</p><button class="btn pri" id="rf">${t().refresh}</button></div></main>`; bindHeader();
     $("#rf").onclick = async () => { try { school = (await getDoc(doc(db, "schools", profile.schoolId))).data(); } catch (e) { console.warn(e); } dashboard(); }; return; }
-  const P = CFG.pay, first = !school.paidUntil, due = (first ? CFG.setup : 0) + CFG.monthly;
+  const P = CFG.pay, first = !school.paidUntil, pl = school.plan && school.plan.custom ? school.plan : CFG, due = (first ? pl.setup : 0) + pl.monthly;
   app$.innerHTML = header() + `<main class="wrap"><h2 style="margin-top:28px">🔒 ${t().expired}</h2><p class="muted">${t().expNote}</p>
   <div class="grid" style="margin-block:16px"><div class="card pay"><b>🏦 ${t().bank}</b><p>${esc(P.bankName)}<br>${t().acT}: ${esc(P.title)}<br>${P.account ? `${t().acNo}: <span dir="ltr">${esc(P.account)}</span><br>` : ""}IBAN: <span dir="ltr">${esc(P.iban)}</span></p></div>
   <div class="card pay"><b>📱 Easypaisa</b><p>${esc(P.epTitle)}<br><span dir="ltr">${esc(P.easypaisa)}</span></p></div></div>
@@ -442,14 +444,16 @@ async function adminPage(pg) {
     L.forEach(s => { c[stOf(s)]++; if (s.pay.length) c.pending++; });
     $("#as0").innerHTML = `<div class="grid">${KS.map(k => `<div class="card stat"><span>${t().af[k]}</span><b>${c[k]}</b></div>`).join("")}</div>`;
     const R = L.filter(s => (s.name || "").toLowerCase().includes(q) && (flt === "all" || (flt === "pending" ? s.pay.length : stOf(s) === flt)));
-    $("#al").innerHTML = R.map(s => `<div class="card"><b>${esc(s.name)}</b> <span class="badge">${t().af[stOf(s)]}</span><div class="muted">${esc(s.address)}</div><div class="muted">${t().trialD}: ${fmt(s.trialEnds)} · ${t().paidTill}: ${fmt(s.paidUntil)}</div>
+    $("#al").innerHTML = R.map(s => `<div class="card"><b>${esc(s.name)}</b> <span class="badge">${t().af[stOf(s)]}</span><div class="muted">${esc(s.address)}</div><div class="muted">${t().trialD}: ${fmt(s.trialEnds)} · ${t().paidTill}: ${fmt(s.paidUntil)} · 💰 ${(s.plan && s.plan.custom ? s.plan : CFG).monthly} / ${(s.plan && s.plan.custom ? s.plan : CFG).setup}</div>
       ${s.pay.map(p => `<div class="row2"><span>💰 ${esc(p.method)} · <span dir="ltr">${esc(p.tid)}</span> · ${p.amount}</span><button class="btn sm pri" data-ok="${s.id}|${p.id}">${t().approve}</button></div>`).join("")}
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><button class="btn sm" data-p="${s.id}">${t().plus30}</button><button class="btn sm" data-b="${s.id}">${s.status === "blocked" ? t().unblock : t().block}</button><button class="btn sm" data-rs="${s.id}">${t().resetT}</button><button class="btn sm" data-v="${s.id}">${s.isPublic ? t().hide : t().show}</button><button class="btn sm" data-ct="${s.id}">${t().contact}</button></div><div id="c_${s.id}" class="muted" dir="ltr" style="margin-top:6px"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><button class="btn sm" data-p="${s.id}">${t().plus30}</button><button class="btn sm" data-b="${s.id}">${s.status === "blocked" ? t().unblock : t().block}</button><button class="btn sm" data-rs="${s.id}">${t().resetT}</button><button class="btn sm" data-tx="${s.id}">${t().trialPlus}</button><button class="btn sm" data-fee="${s.id}">${t().feeBtn}</button><button class="btn sm" data-v="${s.id}">${s.isPublic ? t().hide : t().show}</button><button class="btn sm" data-ct="${s.id}">${t().contact}</button></div><div id="c_${s.id}" class="muted" dir="ltr" style="margin-top:6px"></div></div>`).join("") || `<p class="muted">${t().none2}</p>`;
     const S = a => L.find(x => x.id === a);
     document.querySelectorAll("#al [data-ok]").forEach(b => b.onclick = async () => { const [sid, pid] = b.dataset.ok.split("|"), s = S(sid); try { await ext(s); await updateDoc(doc(db, "schools", sid, "paymentRequests", pid), { status: "approved" }); s.pay = s.pay.filter(p => p.id !== pid); draw(); } catch (e) { toast(e.code); } });
     document.querySelectorAll("#al [data-p]").forEach(b => b.onclick = async () => { try { await ext(S(b.dataset.p)); draw(); } catch (e) { toast(e.code); } });
     document.querySelectorAll("#al [data-b]").forEach(b => b.onclick = () => { const s = S(b.dataset.b); upd(s, { status: s.status === "blocked" ? (ms(s.paidUntil) > Date.now() ? "active" : "trial") : "blocked" }); });
     document.querySelectorAll("#al [data-rs]").forEach(b => b.onclick = () => { if (confirm(t().sureR)) upd(S(b.dataset.rs), { trialEnds: new Date(Date.now() + CFG.trialDays * 864e5), paidUntil: null, status: "trial" }); });
+    document.querySelectorAll("#al [data-tx]").forEach(b => b.onclick = () => { const s = S(b.dataset.tx); upd(s, { trialEnds: new Date(Math.max(Date.now(), ms(s.trialEnds)) + 7 * 864e5), status: s.status === "blocked" ? "blocked" : (ms(s.paidUntil) > Date.now() ? "active" : "trial") }); });
+    document.querySelectorAll("#al [data-fee]").forEach(b => b.onclick = () => { const s = S(b.dataset.fee), cur = s.plan && s.plan.custom ? s.plan : CFG, m = prompt(t().feeQ, cur.monthly); if (m === null || m.trim() === "" || isNaN(+m)) return; const su = prompt(t().setupQ, cur.setup); if (su === null || su.trim() === "" || isNaN(+su)) return; upd(s, { plan: { monthly: +m, setup: +su, custom: true } }); });
     document.querySelectorAll("#al [data-v]").forEach(b => b.onclick = () => { const s = S(b.dataset.v); upd(s, { isPublic: !s.isPublic }); });
     document.querySelectorAll("#al [data-ct]").forEach(b => b.onclick = async () => { try { const u = (await getDoc(doc(db, "users", b.dataset.ct))).data(); $("#c_" + b.dataset.ct).textContent = u ? `${u.name} — ${u.email}` : "—"; } catch (e) { toast(e.code); } }); };
   $("#asq").oninput = draw;
@@ -851,6 +855,7 @@ async function dashboard() {
    ${needV ? `<div class="warn">${t().verify} <button class="btn sm" id="vr">${t().verified}</button></div>` : ""}
    ${viewer ? `<p class="muted" style="margin-bottom:16px">${t().pubOnly}</p><div class="seg" style="margin-bottom:12px"><button type="button" data-vp="c" class="on">${t().m.community}</button><button type="button" data-vp="q">🧠 ${t().m.quiz}</button><button type="button" data-vp="j">💼 ${t().m.jobs}</button></div><div id="cm"></div>` : adm ? "" : `<div class="grid"><div class="card stat"><span class="muted">${esc(school.name)}</span><b>${t().stT[st]}</b></div>${st === "trial" ? `<div class="card stat gold"><span>${t().left}</span><b>${days}</b></div>` : ""}</div>`}`;
   if ($("#vr")) $("#vr").onclick = async () => { await user.reload(); dashboard(); };
+  if (location.search.includes("debug")) pg.insertAdjacentHTML("afterbegin", `<p class="muted" dir="ltr">UID: ${esc(user.uid)} · role: ${esc(profile.role)} · ${esc(user.email)}</p>`);
   if (viewer) { const go = k => { document.querySelectorAll("[data-vp]").forEach(b => b.classList.toggle("on", b.dataset.vp === k)); if (k === "q") quizPage($("#cm")); else if (k === "j") jobsPage($("#cm"), false); else community($("#cm"), true); };
     document.querySelectorAll("[data-vp]").forEach(b => b.onclick = () => go(b.dataset.vp)); go("c"); }
   if (!viewer && !adm) homeGrid(pg, items);
@@ -869,7 +874,7 @@ onAuthStateChanged(auth, async u => {
   if (u) {
     try { await u.reload(); } catch (e) {}
     // نیا اکاؤنٹ بنتے وقت دستاویز لکھنے میں لمحہ لگ سکتا ہے، اس لیے دوبارہ کوشش
-    for (let i = 0; i < 5 && !profile; i++) { const s = await getDoc(doc(db, "users", u.uid)); if (s.exists()) profile = s.data(); else await new Promise(r => setTimeout(r, 600)); }
+    for (let i = 0; i < 5 && !profile; i++) { const s = await getDoc(doc(db, "users", u.uid)); if (s.exists()) { profile = s.data(); profile.role = String(profile.role || "").trim().toLowerCase(); } else await new Promise(r => setTimeout(r, 600)); }
     if (profile?.schoolId) school = (await getDoc(doc(db, "schools", profile.schoolId))).data();
     location.hash = ""; page = "home";
   }
