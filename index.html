@@ -171,6 +171,8 @@ Object.assign(T.ur,{board2:"اسکول ایونٹس و اعلانات",pubOut:"�
 Object.assign(T.en,{board2:"School events & notices",pubOut:"Show to everyone outside",loading:"Loading…",more:"Show more",jobLim:"You have already posted one job today. Try again tomorrow."});
 Object.assign(T.ur,{waGroup:"واٹس ایپ گروپ میں بھیجیں"});
 Object.assign(T.en,{waGroup:"Send to a WhatsApp group"});
+Object.assign(T.ur,{prefAll:"سب اطلاعات",prefAtt:"صرف حاضری کی اطلاع",linkT:"بچہ جوڑیں",linkN:"اسکول سے ملا ہوا 8 حروف کا ربط کوڈ ڈالیں۔ پھر آپ کو اپنے بچے کی حاضری، فیس اور نتائج نظر آئیں گے۔",linkCode:"ربط کوڈ",linkGo:"جوڑیں",linkBad:"کوڈ درست نہیں",linkOk:"بچہ جڑ گیا",linkMsg:"ایپ میں بچہ جوڑنے کا کوڈ برائے",waAsk:"واٹس ایپ پر بھیجیں؟"});
+Object.assign(T.en,{prefAll:"All updates",prefAtt:"Attendance alerts only",linkT:"Link a child",linkN:"Enter the 8-letter link code from the school. You will then see your child's attendance, fees and results.",linkCode:"Link code",linkGo:"Link",linkBad:"Invalid code",linkOk:"Child linked",linkMsg:"App link code for",waAsk:"Send on WhatsApp?"});
 // ہر کردار کو کون سے مینو ملتے ہیں (حصہ 2 میں اجازتوں کے ساتھ جوڑا جائے گا)
 const MENU = { principal:["home","staff","students","teachers","attendance","fees","finance","exams","profile","community","settings"],
   teacher:["home","students","attendance","exams","profile"], finance:["home","fees","finance","community"],
@@ -343,10 +345,11 @@ async function studentsPage(pg) {
   const col = collection(db, "schools", SID(), "students"); let L = [];
   pg.innerHTML = `<h2>${t().m.students}</h2><form class="card" id="sf"><div class="grid"><div><label>${t().sname}</label><input id="sn"></div><div><label>${t().father}</label><input id="sfa"></div><div><label>${t().cls}</label><input id="sc"></div><div><label>${t().roll}</label><input id="sro"></div></div><button class="btn pri" style="margin-top:12px">${t().add}</button></form><button class="btn sm" id="sqr" style="margin-bottom:10px">🖨 ${t().qrAll}</button> <input id="sq" placeholder="${t().search2}"><div id="sl" style="margin-top:12px"></div>`;
   const draw = () => { const q = $("#sq").value.trim().toLowerCase();
-    $("#sl").innerHTML = L.filter(s => (s.name + s.father + s.cls + s.roll).toLowerCase().includes(q)).map(s => `<div class="card row2"><div><b>${esc(s.name)}</b> <span class="muted">${esc(s.father)} · ${esc(s.cls)} · #${esc(s.roll)}</span></div><button class="btn sm pri" data-pr="${s.id}">${t().prof}</button> <button class="btn sm" data-qr="${s.id}">QR</button> ${can("students") ? `<button class="btn sm" data-d="${s.id}">✕</button>` : ""}</div>`).join("") || `<p class="muted">${t().nostu}</p>`;
+    $("#sl").innerHTML = L.filter(s => (s.name + s.father + s.cls + s.roll).toLowerCase().includes(q)).map(s => `<div class="card row2"><div><b>${esc(s.name)}</b> <span class="muted">${esc(s.father)} · ${esc(s.cls)} · #${esc(s.roll)}</span></div><button class="btn sm pri" data-pr="${s.id}">${t().prof}</button> <button class="btn sm" data-qr="${s.id}">QR</button> <button class="btn sm" data-lk="${s.id}">🔗</button> ${can("students") ? `<button class="btn sm" data-d="${s.id}">✕</button>` : ""}</div>`).join("") || `<p class="muted">${t().nostu}</p>`;
     document.querySelectorAll("[data-d]").forEach(b => b.onclick = async () => { if (!confirm(t().sure)) return; await deleteDoc(doc(col, b.dataset.d)); load(); });
     document.querySelectorAll("[data-pr]").forEach(b => b.onclick = () => stuProfile(pg, L.find(x => x.id === b.dataset.pr), () => studentsPage(pg)));
-    document.querySelectorAll("[data-qr]").forEach(b => b.onclick = () => printHTML(qrCard(L.find(x => x.id === b.dataset.qr)))); };
+    document.querySelectorAll("[data-qr]").forEach(b => b.onclick = () => printHTML(qrCard(L.find(x => x.id === b.dataset.qr))));
+    document.querySelectorAll("[data-lk]").forEach(b => b.onclick = () => linkCodeFor(L.find(x => x.id === b.dataset.lk))); };
   const load = async () => { try { L = (await getDocs(col)).docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.cls + a.roll).localeCompare(b.cls + b.roll, undefined, { numeric: true })); } catch (e) { toast(e.code); } draw(); };
   $("#sq").oninput = draw;
   $("#sqr").onclick = () => { const q = $("#sq").value.trim().toLowerCase(); printHTML(L.filter(s => (s.name + s.father + s.cls + s.roll).toLowerCase().includes(q)).map(s => qrCard(s)).join("")); };
@@ -374,7 +377,9 @@ async function attPage(pg) {
     qrScan(id => { const s = S.find(x => x.id === id); if (!s || seen.has(id)) return false; seen.add(id); cur[id] = "P"; toast("✅ " + s.name); if (navigator.vibrate) navigator.vibrate(80); paint(); return true; },
       () => { if (seen.size && confirm(t().qrAbs)) shown().forEach(s => { if (!seen.has(s.id) && cur[s.id] !== "L") cur[s.id] = "A"; }); paint(); }); };
   $("#as").onclick = async () => { shown().forEach(s => cur[s.id] = cur[s.id] || "P"); const d = $("#ad").value;
-    setDoc(doc(ac, d), { marks: cur, month: d.slice(0, 7), year: d.slice(0, 4) }).catch(e => toast(e.code)); toast(t().savedOff); };
+    setDoc(doc(ac, d), { marks: cur, month: d.slice(0, 7), year: d.slice(0, 4) }).catch(e => toast(e.code));
+    shown().forEach(s => { const r = doc(db, "schools", SID(), "alerts", d + "_" + s.id); if (cur[s.id] === "A" || cur[s.id] === "L") setDoc(r, { studentId: s.id, name: s.name, cls: s.cls, date: d, mark: cur[s.id], createdAt: serverTimestamp() }).catch(() => {}); else deleteDoc(r).catch(() => {}); });
+    toast(t().savedOff); };
   const sum = async (f, v) => { const T0 = {}; (await getDocs(query(ac, where(f, "==", v)))).docs.forEach(x => Object.entries(x.data().marks || {}).forEach(([id, k]) => { (T0[id] = T0[id] || { P: 0, A: 0, L: 0 })[k]++; }));
     $("#sx").innerHTML = `<table><tr><th>${t().sname}</th><th>${t().cls}</th><th>${t().att.P}</th><th>${t().att.A}</th><th>${t().att.L}</th></tr>${S.map(s => { const z = T0[s.id] || { P: 0, A: 0, L: 0 }; return `<tr><td>${esc(s.name)}</td><td>${esc(s.cls)}</td><td>${z.P}</td><td>${z.A}</td><td>${z.L}</td></tr>`; }).join("")}</table>`; };
   $("#sm").onclick = () => sum("month", $("#am").value); $("#sy").onclick = () => sum("year", $("#am").value.slice(0, 4));
@@ -527,6 +532,7 @@ async function parentPage(pg, kind) {
       body = body || `<p class="muted">${t().none2}</p>`; }
     html += `<div class="card"><b>${esc(k.name)}</b><div class="muted" style="margin-bottom:8px">${esc(k.cls)}</div>${body}</div>`; }
   pg.innerHTML += html || `<p class="muted">${t().none2}</p>`;
+  if (kind === "children") { const lb = document.createElement("div"); pg.appendChild(lb); linkBox(lb); }
 }
 
 // ---------- پرنٹ ----------
@@ -613,7 +619,11 @@ async function parentNotices(pg) {
   markSeen();
   const cl = new Set(); for (const id of profile.children || []) { try { const d = await getDoc(doc(db, "schools", SID(), "students", id)); if (d.exists()) cl.add(d.data().cls); } catch (e) { console.warn(e); } }
   let L = []; try { L = (await getDocs(query(collection(db, "schools", SID(), "notices"), orderBy("createdAt", "desc"), limit(50)))).docs.map(d => d.data()); } catch (e) { console.warn(e); }
-  pg.innerHTML = `<h2>${t().m.notices}</h2>` + (L.filter(x => !x.cls || cl.has(x.cls)).map(x => `<div class="card"><b>${x.type === "homework" ? "📚" : "📢"} ${esc(x.cls || "")}</b><div>${esc(x.text)}</div></div>`).join("") || `<p class="muted">${t().none2}</p>`);
+  const pref = localStorage.getItem("pref_" + user.uid) || "all"; let AL = [];
+  for (const id of profile.children || []) { try { AL.push(...(await getDocs(query(collection(db, "schools", SID(), "alerts"), where("studentId", "==", id), limit(30)))).docs.map(d => d.data())); } catch (e) { console.warn(e); } }
+  AL.sort((x, y) => y.date.localeCompare(x.date));
+  pg.innerHTML = `<div class="seg" style="margin-bottom:12px"><button type="button" data-pf="all" class="${pref === "all" ? "on" : ""}">${t().prefAll}</button><button type="button" data-pf="att" class="${pref === "att" ? "on" : ""}">${t().prefAtt}</button></div>${AL.slice(0, 10).map(x => `<div class="card">${x.mark === "A" ? "🔴" : "🟡"} <b>${esc(x.name)}</b> — ${esc(x.date)} — ${t().att[x.mark]}</div>`).join("")}<h2>${t().m.notices}</h2>` + (L.filter(x => !x.cls || cl.has(x.cls)).map(x => `<div class="card"><b>${x.type === "homework" ? "📚" : "📢"} ${esc(x.cls || "")}</b><div>${esc(x.text)}</div></div>`).join("") || `<p class="muted">${t().none2}</p>`);
+  pg.querySelectorAll("[data-pf]").forEach(b => b.onclick = () => { localStorage.setItem("pref_" + user.uid, b.dataset.pf); bellC.t = 0; parentNotices(pg); });
 }
 
 // ---------- روزانہ رپورٹ: سبق، سبقی، منزل، آنے/جانے کا وقت ----------
@@ -866,7 +876,9 @@ async function bellUpdate() {
   if (Date.now() - bellC.t < 60000) return show(bellC.n);
   const seen = +localStorage.getItem("seen_" + user.uid) || 0, cl = new Set(); let n = 0;
   for (const id of profile.children || []) { try { const d = await getDoc(doc(db, "schools", SID(), "students", id)); if (d.exists()) cl.add(d.data().cls); } catch (e) { console.warn(e); } }
-  for (const c of ["notices", "events"]) { try { (await getDocs(query(collection(db, "schools", SID(), c), orderBy("createdAt", "desc"), limit(30)))).docs.forEach(d => { const x = d.data(), m = x.createdAt?.toMillis ? x.createdAt.toMillis() : 0; if (m > seen && (!x.cls || cl.has(x.cls))) n++; }); } catch (e) { console.warn(e); } }
+  const pref = localStorage.getItem("pref_" + user.uid) || "all";
+  for (const id of profile.children || []) { try { (await getDocs(query(collection(db, "schools", SID(), "alerts"), where("studentId", "==", id), limit(30)))).docs.forEach(d => { const m = d.data().createdAt?.toMillis ? d.data().createdAt.toMillis() : 0; if (m > seen) n++; }); } catch (e) { console.warn(e); } }
+  if (pref === "all") for (const c of ["notices", "events"]) { try { (await getDocs(query(collection(db, "schools", SID(), c), orderBy("createdAt", "desc"), limit(30)))).docs.forEach(d => { const x = d.data(), m = x.createdAt?.toMillis ? x.createdAt.toMillis() : 0; if (m > seen && (!x.cls || cl.has(x.cls))) n++; }); } catch (e) { console.warn(e); } }
   bellC = { t: Date.now(), n }; show(n);
 }
 const waText = x => `${x.type === "homework" ? "📚" : x.type === "event" ? "📅" : "📢"} ${school?.name || ""}\n${x.cls ? x.cls + ": " : ""}${x.text || x.title || ""}${x.date ? "\n📅 " + x.date : ""}`;
@@ -875,6 +887,24 @@ async function waPanel(x, box) {
   const txt = encodeURIComponent(waText(x)); let P = [];
   if (profile.role === "principal") { try { P = (await getDocs(query(collection(db, "users"), where("schoolId", "==", SID())))).docs.map(d => d.data()).filter(u => u.role === "parent" && u.phone); } catch (e) { console.warn(e); } }
   box.innerHTML = `<div style="margin-top:8px"><a class="btn sm pri" target="_blank" rel="noopener" href="https://wa.me/?text=${txt}">📲 ${t().waGroup}</a></div>${P.map(u => `<div class="row2" style="margin-top:6px"><span>${esc(u.name)}</span><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/${waNum(u.phone)}?text=${txt}">📲</a></div>`).join("")}`;
+}
+
+// ---------- والدین خود بچہ جوڑیں (ربط کوڈ) ----------
+async function linkCodeFor(s) {
+  let c = s.linkCode;
+  if (!c) { const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; c = [...crypto.getRandomValues(new Uint8Array(8))].map(v => A[v % 32]).join("");
+    try { await setDoc(doc(db, "linkCodes", c), { schoolId: SID(), studentId: s.id, name: s.name, cls: s.cls, createdAt: serverTimestamp() }); await updateDoc(doc(db, "schools", SID(), "students", s.id), { linkCode: c }); s.linkCode = c; } catch (e) { return toast(e.code); } }
+  const msg = `${school.name}: ${t().linkMsg} ${s.name}\n${t().linkCode}: ${c}`;
+  prompt(msg, c); if (confirm(t().waAsk)) window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+}
+function linkBox(box) {
+  box.innerHTML = `<div class="card"><h3>👨‍👩‍👧 ${t().linkT}</h3><p class="muted">${t().linkN}</p><input id="lk1" dir="ltr" placeholder="${t().linkCode}" maxlength="8" style="text-transform:uppercase"><button class="btn pri" id="lk2" style="margin-top:10px">${t().linkGo}</button></div>`;
+  $("#lk2").onclick = async () => { const c = $("#lk1").value.trim().toUpperCase(); if (c.length < 8) return toast(t().need);
+    try { const k = await getDoc(doc(db, "linkCodes", c)); if (!k.exists()) return toast(t().linkBad);
+      const x = k.data(), old = profile.children || [], ch = old.includes(x.studentId) ? old : [...old, x.studentId];
+      await updateDoc(doc(db, "users", user.uid), { role: "parent", schoolId: x.schoolId, children: ch, code: c });
+      profile = (await getDoc(doc(db, "users", user.uid))).data(); profile.role = String(profile.role).trim().toLowerCase(); school = (await getDoc(doc(db, "schools", profile.schoolId))).data();
+      page = "children"; toast(t().linkOk); dashboard(); } catch (e) { toast(e.code); } };
 }
 
 // ---------- ڈیش بورڈ ----------
@@ -896,10 +926,10 @@ async function dashboard() {
   const needV = !user.emailVerified && ["principal", "viewer"].includes(profile.role);
   pg.innerHTML = `<div class="welcome hero2"><h2>${t().welcome}، ${esc(profile.name)}</h2><span class="badge">${t().roles[profile.role] || ""}</span><div style="flex-basis:100%">💡 ${dayMsg()}</div></div>
    ${needV ? `<div class="warn">${t().verify} <button class="btn sm" id="vr">${t().verified}</button></div>` : ""}
-   ${viewer ? `<p class="muted" style="margin-bottom:16px">${t().pubOnly}</p><div class="seg" style="margin-bottom:12px"><button type="button" data-vp="c" class="on">${t().m.community}</button><button type="button" data-vp="q">🧠 ${t().m.quiz}</button><button type="button" data-vp="j">💼 ${t().m.jobs}</button></div><div id="cm"></div>` : adm ? "" : `<div class="grid"><div class="card stat"><span class="muted">${esc(school.name)}</span><b>${t().stT[st]}</b></div>${st === "trial" ? `<div class="card stat gold"><span>${t().left}</span><b>${days}</b></div>` : ""}</div>`}`;
+   ${viewer ? `<p class="muted" style="margin-bottom:16px">${t().pubOnly}</p><div class="seg" style="margin-bottom:12px"><button type="button" data-vp="c" class="on">${t().m.community}</button><button type="button" data-vp="q">🧠 ${t().m.quiz}</button><button type="button" data-vp="j">💼 ${t().m.jobs}</button><button type="button" data-vp="l">👨‍👩‍👧 ${t().linkT}</button></div><div id="cm"></div>` : adm ? "" : `<div class="grid"><div class="card stat"><span class="muted">${esc(school.name)}</span><b>${t().stT[st]}</b></div>${st === "trial" ? `<div class="card stat gold"><span>${t().left}</span><b>${days}</b></div>` : ""}</div>`}`;
   if ($("#vr")) $("#vr").onclick = async () => { await user.reload(); dashboard(); };
   if (location.search.includes("debug")) pg.insertAdjacentHTML("afterbegin", `<p class="muted" dir="ltr">UID: ${esc(user.uid)} · role: ${esc(profile.role)} · ${esc(user.email)}</p>`);
-  if (viewer) { const go = k => { document.querySelectorAll("[data-vp]").forEach(b => b.classList.toggle("on", b.dataset.vp === k)); if (k === "q") quizPage($("#cm")); else if (k === "j") jobsPage($("#cm"), false); else community($("#cm"), true); };
+  if (viewer) { const go = k => { document.querySelectorAll("[data-vp]").forEach(b => b.classList.toggle("on", b.dataset.vp === k)); if (k === "q") quizPage($("#cm")); else if (k === "j") jobsPage($("#cm"), false); else if (k === "l") linkBox($("#cm")); else community($("#cm"), true); };
     document.querySelectorAll("[data-vp]").forEach(b => b.onclick = () => go(b.dataset.vp)); go("c"); }
   if (!viewer && !adm) homeGrid(pg, items);
   if (BOSS()) statsRow(pg);
